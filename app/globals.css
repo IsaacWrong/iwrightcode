@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  --bg: #0D1117;
+  --fg: #E6EDF3;
+  --muted: #7D8590;
+  --border: #30363D;
+  --border-subtle: #21262D;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-border-subtle: var(--border-subtle);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-sans: var(--font-inter);
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-jetbrains-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  -webkit-font-smoothing: antialiased;
+}
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+.animate-blink {
+  animation: blink 1s steps(2) infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .animate-blink { animation: none; }
+}
+
+*:focus-visible {
+  outline: 2px solid var(--fg);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--fg);
+  color: var(--bg);
+}
+
+.project-card {
+  border: 0.5px solid var(--border);
+  transition: border-color 200ms;
+}
+
+.project-card-wrap:hover .project-card,
+.project-card-wrap:focus-visible .project-card {
+  border-color: var(--fg);
+}
+
+.hairline {
+  border: 0.5px solid var(--border);
+}
+
+.hairline-subtle-t {
+  border-top: 0.5px solid var(--border-subtle);
+}
+
+.hairline-subtle-b {
+  border-bottom: 0.5px solid var(--border-subtle);
+}
