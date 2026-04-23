@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1584" height="396" viewBox="0 0 1584 396">
+  <rect width="1584" height="396" fill="#0D1117"/>
+
+  <!-- Wordmark -->
+  <text x="80" y="180" font-family="ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace" font-size="62" font-weight="500" fill="#E6EDF3" letter-spacing="-1">iwrightcode_</text>
+
+  <!-- Subtitle -->
+  <text x="80" y="220" font-family="ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace" font-size="18" fill="#7D8590">full-stack developer · lexington, ky</text>
+
+  <!-- Divider -->
+  <line x1="80" y1="255" x2="540" y2="255" stroke="#30363D" stroke-width="0.5"/>
+
+  <!-- Tagline -->
+  <text x="80" y="290" font-family="ui-monospace, 'SF Mono', 'JetBrains Mono', Menlo, monospace" font-size="16" fill="#7D8590">// building at the intersection of finance and ai</text>
+</svg>
