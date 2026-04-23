@@ -10,6 +10,9 @@ export default function ProjectCard({ project }: { project: Project }) {
       <div className="flex items-center justify-between">
         <span className="font-mono text-[11px] text-muted">
           [{project.status}]
+          {!project.href ? (
+            <span className="ml-2 text-muted">· private</span>
+          ) : null}
         </span>
         <span className="font-mono text-[11px] text-muted">
           ./{project.slug}
@@ -41,17 +44,32 @@ export default function ProjectCard({ project }: { project: Project }) {
     </article>
   );
 
-  if (project.href) {
+  if (!project.href) {
+    return <div>{inner}</div>;
+  }
+
+  const isExternal = /^https?:\/\//.test(project.href);
+  if (isExternal) {
     return (
-      <Link
+      <a
         href={project.href}
         className="project-card-wrap block"
         aria-label={project.name}
+        target="_blank"
+        rel="noopener noreferrer"
       >
         {inner}
-      </Link>
+      </a>
     );
   }
 
-  return <div className="project-card-wrap">{inner}</div>;
+  return (
+    <Link
+      href={project.href}
+      className="project-card-wrap block"
+      aria-label={project.name}
+    >
+      {inner}
+    </Link>
+  );
 }

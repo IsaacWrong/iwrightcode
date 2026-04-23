@@ -1,20 +1,5 @@
 type IconProps = { size?: number };
 
-function TwitterIcon({ size = 14 }: IconProps) {
-  return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      width={size}
-      height={size}
-      viewBox="0 0 24 24"
-      fill="currentColor"
-      aria-hidden="true"
-    >
-      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-    </svg>
-  );
-}
-
 function GithubIcon({ size = 14 }: IconProps) {
   return (
     <svg
@@ -58,67 +43,60 @@ function LinkedinIcon({ size = 14 }: IconProps) {
 
 const socials = [
   {
-    label: "@iwrightcode",
-    href: "https://x.com/iwrightcode",
-    Icon: TwitterIcon,
-  },
-  {
-    label: "github.com/iwrightcode",
-    href: "https://github.com/iwrightcode",
+    label: "github.com/IsaacWrong",
+    href: "https://github.com/IsaacWrong",
     Icon: GithubIcon,
   },
   {
-    label: "linkedin.com/in/iwrightcode",
-    href: "https://linkedin.com/in/iwrightcode",
+    label: "linkedin.com/company/iwrightcode",
+    href: "https://www.linkedin.com/company/iwrightcode",
     Icon: LinkedinIcon,
   },
 ];
 
 export default function Contact() {
   return (
-    <section id="contact" className="py-24 px-6">
-      <div className="max-w-[560px] mx-auto w-full">
-        <p className="font-mono text-[11px] text-muted">
-          {"// get in touch"}
-        </p>
-        <h2
-          className="font-mono font-medium text-[32px] text-fg mt-2"
-          style={{ lineHeight: 1.3, letterSpacing: "-0.5px" }}
+    <section id="contact" className="py-24 px-6 md:px-10 lg:px-16">
+      <p className="font-mono text-[11px] text-muted">
+        {"// get in touch"}
+      </p>
+      <h2
+        className="font-mono font-medium text-[32px] text-fg mt-2"
+        style={{ lineHeight: 1.3, letterSpacing: "-0.5px" }}
+      >
+        let&apos;s build something.
+      </h2>
+      <p
+        className="font-sans text-[15px] text-muted mt-4"
+        style={{ lineHeight: 1.6, maxWidth: 480 }}
+      >
+        Open to full-stack contracts, fintech projects, and AI-native builds.
+        Remote friendly.
+      </p>
+      <div className="mt-8">
+        <a
+          href="mailto:iwrightcode@gmail.com"
+          className="inline-block font-mono font-medium text-[13px] bg-fg text-bg hover:opacity-90 transition-opacity"
+          style={{ padding: "10px 18px", borderRadius: 6 }}
         >
-          let&apos;s build something.
-        </h2>
-        <p
-          className="font-sans text-[15px] text-muted mt-4"
-          style={{ lineHeight: 1.6, maxWidth: 480 }}
-        >
-          Open to full-stack contracts, fintech projects, and AI-native builds.
-          Lexington, KY — remote friendly.
-        </p>
-        <div className="mt-8">
-          <a
-            href="mailto:isaac@iwrightcode.com"
-            className="inline-block font-mono font-medium text-[13px] bg-fg text-bg hover:opacity-90 transition-opacity"
-            style={{ padding: "10px 18px", borderRadius: 6 }}
-          >
-            isaac@iwrightcode.com
-          </a>
-        </div>
-        <ul className="flex flex-wrap gap-6 mt-8">
-          {socials.map(({ label, href, Icon }) => (
-            <li key={href}>
-              <a
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 font-mono text-[12px] text-muted hover:text-fg transition-colors"
-              >
-                <Icon size={14} />
-                <span>{label}</span>
-              </a>
-            </li>
-          ))}
-        </ul>
+          iwrightcode@gmail.com
+        </a>
       </div>
+      <ul className="flex flex-wrap gap-6 mt-8">
+        {socials.map(({ label, href, Icon }) => (
+          <li key={href}>
+            <a
+              href={href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-[12px] text-muted hover:text-fg transition-colors"
+            >
+              <Icon size={14} />
+              <span>{label}</span>
+            </a>
+          </li>
+        ))}
+      </ul>
     </section>
   );
 }

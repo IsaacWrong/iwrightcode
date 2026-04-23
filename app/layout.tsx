@@ -18,19 +18,13 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://iwrightcode.com"),
   title: "iwrightcode_ — Isaac Wright, full-stack developer",
   description:
-    "Full-stack developer specializing in vertical SaaS, fintech, and AI-native applications. Lexington, KY.",
+    "Full-stack developer specializing in vertical SaaS, fintech, and AI-native applications.",
   openGraph: {
     title: "iwrightcode_",
     description: "build. ship. repeat.",
     url: "https://iwrightcode.com",
     siteName: "iwrightcode_",
     type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    creator: "@iwrightcode",
-    title: "iwrightcode_",
-    description: "build. ship. repeat.",
   },
   icons: {
     icon: "/favicon.svg",

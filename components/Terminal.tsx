@@ -16,7 +16,12 @@ const SCRIPT: Line[] = [
   { prompt: true, text: "ls ./projects" },
   {
     prompt: false,
-    text: "palm-commissions/   trading-copilot/   client-portal/",
+    text: "autoform/         bluegrass-home-services/   bookcheckr/",
+    mutedOutput: false,
+  },
+  {
+    prompt: false,
+    text: "exit-edge-ai/     palm-commissions/          rectorfolio/",
     mutedOutput: false,
   },
   { prompt: true, text: "cat contact.txt" },
@@ -89,14 +94,14 @@ export default function Terminal() {
 
   return (
     <div
-      className="w-full max-w-[560px] overflow-hidden"
+      className="w-full max-w-[720px] overflow-hidden"
       style={{
         background: "#010409",
         border: "0.5px solid var(--border)",
         borderRadius: 10,
       }}
       role="img"
-      aria-label="Terminal showing: whoami returns isaac.wright — developer; ls ./projects lists palm-commissions, trading-copilot, client-portal; cat contact.txt says let's build something."
+      aria-label="Terminal showing: whoami returns isaac.wright — developer; ls ./projects lists autoform, bluegrass-home-services, bookcheckr, exit-edge-ai, palm-commissions, and rectorfolio; cat contact.txt says let's build something."
     >
       <div
         className="flex items-center py-[10px] px-[14px] bg-bg"
@@ -122,8 +127,8 @@ export default function Terminal() {
         <span className="w-[42px]" aria-hidden="true" />
       </div>
       <div
-        className="font-mono text-[13px]"
-        style={{ padding: "18px 16px", lineHeight: 1.7 }}
+        className="font-mono text-[14px]"
+        style={{ padding: "22px 20px", lineHeight: 1.75 }}
       >
         {visible.map((line, i) => {
           const isTyping = !reduceMotion && i === lineIdx && !line.cursor;

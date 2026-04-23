@@ -2,6 +2,7 @@ export type Project = {
   slug: string;
   name: string;
   tagline: string;
+  summary?: string;
   stack: string[];
   status: "shipped" | "building" | "exploring";
   href?: string;
@@ -12,32 +13,55 @@ export const projects: Project[] = [
     slug: "palm-commissions",
     name: "Palm Commissions",
     tagline:
-      "Vertical SaaS for insurance agency commission tracking and reconciliation.",
-    stack: ["Next.js", "Supabase", "TypeScript", "Stripe"],
+      "Commission tracking for insurance agents. Upload CSV/Excel from any carrier, reconcile earnings, and manage your book of business.",
+    summary: "Commission tracking + reconciliation for insurance agents.",
+    stack: ["Next.js 15", "Supabase", "Stripe", "PostHog", "Sentry"],
+    status: "building",
+    href: "https://pcommissions.com",
+  },
+  {
+    slug: "rectorfolio",
+    name: "Rectorfolio",
+    tagline:
+      "Social investing platform with an AI co-pilot that creates strategies from natural language, executes trades, and explains every rebalance.",
+    summary: "AI-native social investing with a persistent co-pilot.",
+    stack: ["Next.js 16", "Vercel AI SDK", "Anthropic", "Supabase", "Inngest"],
     status: "building",
   },
   {
-    slug: "trading-copilot",
-    name: "Trading Copilot",
+    slug: "exit-edge-ai",
+    name: "ExitEdge AI",
     tagline:
-      "AI-native self-directed investing platform. Conversational strategy creation with automated execution.",
-    stack: ["Next.js 15", "Vercel AI SDK", "Alpaca", "Inngest"],
-    status: "exploring",
+      "Marketing site and lead engine for a consulting firm helping owner-operated businesses prepare for exit through AI and process engineering.",
+    stack: ["Next.js 16", "Anthropic SDK", "Supabase", "Resend"],
+    status: "shipped",
+    href: "https://exitedgeai.com",
   },
   {
-    slug: "client-portal",
-    name: "Advisor Client Portal",
+    slug: "autoform",
+    name: "Autoform",
     tagline:
-      "Secure document exchange and policy review tool built for an independent advisory practice.",
-    stack: ["Next.js", "Supabase", "DocuSign"],
+      "Internal account-opening automation for a wealth management firm. Multi-step advisor intake routes through Make.com to populate DocuSign packets for client signature.",
+    summary: "Account-opening automation for a wealth management firm.",
+    stack: ["Next.js 16", "Zod", "Make.com", "DocuSign"],
     status: "shipped",
   },
   {
-    slug: "mcp-experiments",
-    name: "MCP Experiments",
+    slug: "bookcheckr",
+    name: "Bookcheckr",
     tagline:
-      "Open-source explorations of the Model Context Protocol for domain-specific agent workflows.",
-    stack: ["TypeScript", "Anthropic API", "MCP"],
-    status: "exploring",
+      "AI-powered annuity book-of-business review for financial advisors. Desktop app that surfaces opportunities in under 30 seconds.",
+    summary: "Desktop annuity book-of-business review for advisors.",
+    stack: ["Electron", "React", "Vite", "Supabase", "Anthropic", "Stripe"],
+    status: "shipped",
+  },
+  {
+    slug: "bluegrass-home-services",
+    name: "Bluegrass Home Services",
+    tagline:
+      "Marketing site and quote pipeline for a Lexington, KY home-services company. Rate-limited quote form with direct-to-inbox delivery.",
+    stack: ["Next.js 16", "Resend", "Upstash Redis", "Zod"],
+    status: "shipped",
+    href: "https://bluegrasshservices.com",
   },
 ];
