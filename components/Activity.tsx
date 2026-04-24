@@ -1,5 +1,6 @@
-import { relativeTime, type ActivityItem } from "@/lib/github";
+import { relativeTime, type ActivityItem, type Contributions } from "@/lib/github";
 import SectionHeading from "./SectionHeading";
+import ContributionGraph from "./ContributionGraph";
 
 function toneClass(tone: ActivityItem["tone"]): string {
   switch (tone) {
@@ -23,9 +24,11 @@ function toneClass(tone: ActivityItem["tone"]): string {
 export default function Activity({
   items,
   now,
+  contributions,
 }: {
   items: ActivityItem[];
   now: Date;
+  contributions: Contributions | null;
 }) {
   return (
     <section id="activity" className="py-24 px-6 md:px-10 lg:px-16">
@@ -43,6 +46,15 @@ export default function Activity({
             padding: 22,
           }}
         >
+          {contributions ? (
+            <>
+              <ContributionGraph data={contributions} />
+              <div
+                className="my-5"
+                style={{ borderTop: "0.5px solid var(--border)" }}
+              />
+            </>
+          ) : null}
           {items.length === 0 ? (
             <div className="text-muted">
               <span className="text-[#FF7B72] mr-2">!</span>

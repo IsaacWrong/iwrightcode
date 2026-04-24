@@ -1,5 +1,4 @@
 import SectionHeading from "./SectionHeading";
-import GitGraph from "./GitGraph";
 
 const stack = [
   {
@@ -77,13 +76,6 @@ export default function About() {
             ))}
           </dl>
         </aside>
-      </div>
-
-      <div className="mt-16">
-        <p className="font-mono text-[11px] text-muted">{"// timeline"}</p>
-        <div className="mt-4">
-          <GitGraph />
-        </div>
       </div>
     </section>
   );
