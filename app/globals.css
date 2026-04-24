@@ -134,6 +134,46 @@ body {
   color: var(--muted);
 }
 
+/* ── spotlight grid (hero backdrop) ────────────────────────────── */
+
+.spotlight-grid {
+  --mx: -50%;
+  --my: -50%;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.045) 0.5px, transparent 0.5px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.045) 0.5px, transparent 0.5px);
+  background-size: 28px 28px;
+  background-position: -0.5px -0.5px;
+  -webkit-mask-image: radial-gradient(
+    420px circle at var(--mx) var(--my),
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.55) 35%,
+    transparent 75%
+  );
+  mask-image: radial-gradient(
+    420px circle at var(--mx) var(--my),
+    rgba(0, 0, 0, 0.95) 0%,
+    rgba(0, 0, 0, 0.55) 35%,
+    transparent 75%
+  );
+  transition: -webkit-mask-position 200ms ease, mask-position 200ms ease;
+}
+
+@media (prefers-reduced-motion: reduce), (hover: none) {
+  .spotlight-grid {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.5) 0%,
+      transparent 90%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.5) 0%,
+      transparent 90%
+    );
+  }
+}
+
 /* ── hairlines ─────────────────────────────────────────────────── */
 
 .hairline {
