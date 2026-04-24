@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useSyncExternalStore } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 
 const subscribe = () => () => {};
 

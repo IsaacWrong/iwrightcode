@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from "react";
-import { useReducedMotion } from "framer-motion";
+import { useReducedMotion } from "@/lib/useReducedMotion";
 import { projects } from "@/lib/projects";
 import type { ActivityItem } from "@/lib/github";
 import { relativeTime } from "@/lib/github";
