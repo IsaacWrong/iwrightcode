@@ -20,15 +20,10 @@ export default function ContributionGraph({ data }: { data: Contributions }) {
     <div>
       <div className="flex items-baseline justify-between gap-4 font-mono text-[12px] md:text-[13px]">
         <span>
-          <span className="text-[#7ee787] tabular-nums">{data.total30}</span>
+          <span className="text-[#7ee787] tabular-nums">{data.totalYear}</span>
           <span className="text-muted"> contributions · </span>
-          <span className="text-[#7ee787] tabular-nums">{data.activeDays30}</span>
-          <span className="text-muted"> active days · </span>
-          <span className="text-[#7ee787] tabular-nums">{data.currentStreak}</span>
-          <span className="text-muted"> day streak</span>
-        </span>
-        <span className="text-muted hidden sm:inline tabular-nums">
-          {data.totalYear} this year
+          <span className="text-[#7ee787] tabular-nums">{data.activeDaysYear}</span>
+          <span className="text-muted"> active days in the last year</span>
         </span>
       </div>
       <div className="mt-3 overflow-x-auto">

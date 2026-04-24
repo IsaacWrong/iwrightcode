@@ -249,9 +249,7 @@ export type ContributionDay = {
 export type Contributions = {
   weeks: ContributionDay[][];
   totalYear: number;
-  total30: number;
-  activeDays30: number;
-  currentStreak: number;
+  activeDaysYear: number;
 };
 
 const CONTRIB_LEVEL: Record<string, 0 | 1 | 2 | 3 | 4> = {
@@ -344,25 +342,12 @@ export async function fetchContributions(): Promise<Contributions | null> {
     }))
   );
 
-  const flat = weeks.flat();
-  const last30 = flat.slice(-30);
-  const total30 = last30.reduce((s, d) => s + d.count, 0);
-  const activeDays30 = last30.filter((d) => d.count > 0).length;
-
-  let currentStreak = 0;
-  let i = flat.length - 1;
-  if (i >= 0 && flat[i].count === 0) i--;
-  while (i >= 0 && flat[i].count > 0) {
-    currentStreak++;
-    i--;
-  }
+  const activeDaysYear = weeks.flat().filter((d) => d.count > 0).length;
 
   return {
     weeks,
     totalYear: calendar.totalContributions ?? 0,
-    total30,
-    activeDays30,
-    currentStreak,
+    activeDaysYear,
   };
 }
 
