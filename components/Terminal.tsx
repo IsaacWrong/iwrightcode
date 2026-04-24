@@ -135,7 +135,7 @@ export default function Terminal({ activity = [] }: Props) {
     const el = scrollRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
-  }, [blocks, phase, authStep, lineIdx]);
+  }, [blocks, phase, authStep]);
 
   const submitEmail = useCallback(async () => {
     const email = emailInput.trim();
@@ -671,7 +671,7 @@ function ShellRow({ block }: { block: ShellBlock }) {
 
 function chunkRows(items: string[], perRow: number): string[] {
   if (items.length === 0) return [];
-  const colW = Math.max(...items.map((s) => s.length)) + 2;
+  const colW = items.reduce((max, s) => Math.max(max, s.length), 0) + 2;
   const rows: string[] = [];
   for (let i = 0; i < items.length; i += perRow) {
     rows.push(

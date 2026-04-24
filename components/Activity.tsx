@@ -1,4 +1,4 @@
-import { fetchActivity, relativeTime, type ActivityItem } from "@/lib/github";
+import { relativeTime, type ActivityItem } from "@/lib/github";
 import SectionHeading from "./SectionHeading";
 
 function toneClass(tone: ActivityItem["tone"]): string {
@@ -20,10 +20,13 @@ function toneClass(tone: ActivityItem["tone"]): string {
   }
 }
 
-export default async function Activity() {
-  const items = await fetchActivity(8);
-  const now = new Date();
-
+export default function Activity({
+  items,
+  now,
+}: {
+  items: ActivityItem[];
+  now: Date;
+}) {
   return (
     <section id="activity" className="py-24 px-6 md:px-10 lg:px-16">
       <SectionHeading

@@ -1,11 +1,15 @@
 import Terminal from "./Terminal";
 import SpotlightGrid from "./SpotlightGrid";
 import LastActivity from "./LastActivity";
-import { fetchActivity } from "@/lib/github";
+import type { ActivityItem } from "@/lib/github";
 
-export default async function Hero() {
-  const activity = await fetchActivity(8);
-
+export default function Hero({
+  activity,
+  now,
+}: {
+  activity: ActivityItem[];
+  now: Date;
+}) {
   return (
     <section
       id="top"
@@ -45,7 +49,7 @@ export default async function Hero() {
           </p>
 
           <div className="mt-5">
-            <LastActivity items={activity} />
+            <LastActivity items={activity} now={now} />
           </div>
 
           <div className="flex flex-wrap items-center gap-3 mt-8">

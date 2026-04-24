@@ -1,9 +1,15 @@
 import { relativeTime, type ActivityItem } from "@/lib/github";
 
-export default function LastActivity({ items }: { items: ActivityItem[] }) {
+export default function LastActivity({
+  items,
+  now,
+}: {
+  items: ActivityItem[];
+  now: Date;
+}) {
   const latest = items[0];
   if (!latest) return null;
-  const when = relativeTime(latest.when);
+  const when = relativeTime(latest.when, now);
   const inner = (
     <p
       className="font-mono text-[12px] text-muted"

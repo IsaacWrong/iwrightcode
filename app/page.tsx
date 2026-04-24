@@ -5,15 +5,19 @@ import Activity from "@/components/Activity";
 import About from "@/components/About";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import { fetchActivity } from "@/lib/github";
 
-export default function Home() {
+export default async function Home() {
+  const activity = await fetchActivity(8);
+  const now = new Date();
+
   return (
     <>
       <Nav />
       <main className="flex-1">
-        <Hero />
+        <Hero activity={activity} now={now} />
         <Work />
-        <Activity />
+        <Activity items={activity} now={now} />
         <About />
         <Contact />
       </main>
