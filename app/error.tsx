@@ -1,12 +1,21 @@
+"use client";
+
+import { useEffect } from "react";
 import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
-export const metadata = {
-  title: "404 — iwrightcode_",
-};
+export default function GlobalError({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
+  useEffect(() => {
+    console.error("[app/error]", error);
+  }, [error]);
 
-export default function NotFound() {
   return (
     <>
       <Nav />
@@ -46,22 +55,31 @@ export default function NotFound() {
             className="font-mono text-[13px] md:text-[14px]"
             style={{ padding: "22px 22px", lineHeight: 1.8 }}
           >
-            <h1 className="sr-only">404 — page not found</h1>
+            <h1 className="sr-only">Something went wrong</h1>
             <div className="text-fg">
               <span className="text-muted mr-2">$</span>
-              cd /the-page-you-wanted
+              render /
             </div>
             <div className="text-[#FF7B72] mt-1">
-              zsh: cd: no such file or directory: /the-page-you-wanted
+              runtime error: the page failed to render.
             </div>
+            {error.digest ? (
+              <div className="text-muted text-[11px] mt-1">
+                digest: {error.digest}
+              </div>
+            ) : null}
             <div className="text-fg mt-4">
               <span className="text-muted mr-2">$</span>
-              status
+              <button
+                type="button"
+                onClick={reset}
+                className="text-fg underline-offset-4 hover:underline"
+              >
+                retry
+              </button>
+              <span className="ml-2 text-muted">{"# re-attempt render"}</span>
             </div>
-            <div className="text-muted">
-              404 — the route did not match any handler.
-            </div>
-            <div className="text-fg mt-4">
+            <div className="text-fg mt-2">
               <span className="text-muted mr-2">$</span>
               <Link
                 href="/"
