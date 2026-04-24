@@ -26,13 +26,13 @@ export default function ContributionGraph({ data }: { data: Contributions }) {
           <span className="text-muted"> active days in the last year</span>
         </span>
       </div>
-      <div className="mt-3 overflow-x-auto">
+      <div className="mt-3 max-w-[720px] overflow-x-auto">
         <svg
           role="img"
           aria-label={`GitHub contribution heatmap — ${data.totalYear} contributions in the last year, including private repositories`}
-          width={width}
-          height={height}
-          className="block"
+          viewBox={`0 0 ${width} ${height}`}
+          preserveAspectRatio="xMidYMid meet"
+          className="block w-full h-auto"
         >
           {data.weeks.map((week, wi) =>
             week.map((day) => {
