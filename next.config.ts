@@ -5,6 +5,13 @@ const isDev = process.env.NODE_ENV !== "production";
 
 // React dev mode and Turbopack HMR require 'unsafe-eval' for callstack
 // reconstruction and fast refresh. Production never uses eval().
+//
+// Prod keeps 'unsafe-inline' in script-src as a deliberate tradeoff:
+// migrating to per-request nonces requires proxy.ts + fully dynamic
+// rendering, which would disable static generation and CDN caching
+// for `/`. On a static portfolio with no user-generated HTML, no
+// auth, and no reflected input, the XSS surface doesn't justify that
+// cost. Revisit if dynamic content or sensitive data is introduced.
 const scriptSrc = [
   "'self'",
   "'unsafe-inline'",

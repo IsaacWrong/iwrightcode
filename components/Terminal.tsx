@@ -577,24 +577,22 @@ export default function Terminal({ activity = [] }: Props) {
                 placeholder="you@domain.com"
                 aria-label="email"
                 aria-invalid={emailError ? true : undefined}
-                aria-describedby={emailError ? "terminal-email-error" : undefined}
+                aria-describedby="terminal-email-error"
                 className="flex-1 min-w-0 bg-transparent outline-none text-fg placeholder:text-muted/60 caret-transparent font-mono"
               />
             </form>
-            {emailError ? (
-              <div
-                id="terminal-email-error"
-                role="alert"
-                className="text-[#FF7B72] mt-1"
-              >
-                {emailError}
-              </div>
-            ) : null}
+            <div
+              id="terminal-email-error"
+              role="alert"
+              className="text-[#FF7B72] mt-1 min-h-[1em]"
+            >
+              {emailError ?? ""}
+            </div>
           </div>
         ) : null}
 
         {phase === "auth" ? (
-          <div className="mt-2">
+          <div className="mt-2" role="status" aria-live="polite">
             {authStep >= 1 ? (
               <div className="text-muted">authenticating…</div>
             ) : null}

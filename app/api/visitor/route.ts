@@ -1,4 +1,6 @@
 import { NextResponse } from "next/server";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const NOTIFY_TO = "iwrightcode@gmail.com";
@@ -6,9 +8,26 @@ const FROM = "iwrightcode <noreply@iwrightcode.com>";
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_MAX = 5;
+
+// Persistent limiter — activates when UPSTASH_REDIS_REST_URL and
+// UPSTASH_REDIS_REST_TOKEN are set. On Vercel's serverless runtime
+// the in-memory fallback below is best-effort only (each cold start
+// gets a fresh Map) so Upstash is the real enforcement in prod.
+const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
+const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
+const upstashLimiter =
+  redisUrl && redisToken
+    ? new Ratelimit({
+        redis: new Redis({ url: redisUrl, token: redisToken }),
+        limiter: Ratelimit.slidingWindow(RATE_MAX, "10 m"),
+        prefix: "visitor",
+        analytics: false,
+      })
+    : null;
+
 const hits = new Map<string, number[]>();
 
-function rateLimited(ip: string): boolean {
+function rateLimitedLocal(ip: string): boolean {
   const now = Date.now();
   const recent = (hits.get(ip) ?? []).filter((t) => now - t < RATE_WINDOW_MS);
   if (recent.length >= RATE_MAX) {
@@ -18,6 +37,22 @@ function rateLimited(ip: string): boolean {
   recent.push(now);
   hits.set(ip, recent);
   return false;
+}
+
+async function rateLimited(ip: string): Promise<boolean> {
+  if (upstashLimiter) {
+    try {
+      const { success } = await upstashLimiter.limit(ip);
+      return !success;
+    } catch (err) {
+      // Fail open: the local map would double-count across invocations
+      // the Upstash call may have already recorded, and doesn't persist
+      // across cold starts anyway.
+      console.error("[visitor] upstash ratelimit failed, allowing request", err);
+      return false;
+    }
+  }
+  return rateLimitedLocal(ip);
 }
 
 function sanitize(v: string, max = 200): string {
@@ -52,7 +87,7 @@ export async function POST(req: Request) {
     req.headers.get("x-real-ip") ||
     "?";
 
-  if (rateLimited(ip)) {
+  if (await rateLimited(ip)) {
     return NextResponse.json({ ok: false, error: "too many requests" }, { status: 429 });
   }
 
