@@ -8,6 +8,7 @@ const FROM = "iwrightcode <noreply@iwrightcode.com>";
 
 const RATE_WINDOW_MS = 10 * 60 * 1000;
 const RATE_MAX = 5;
+const MAX_BODY_BYTES = 2048;
 
 // Persistent limiter — activates when UPSTASH_REDIS_REST_URL and
 // UPSTASH_REDIS_REST_TOKEN are set. On Vercel's serverless runtime
@@ -82,18 +83,37 @@ export async function POST(req: Request) {
     );
   }
 
-  const ip =
-    req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
-    req.headers.get("x-real-ip") ||
-    "?";
+  const declaredLen = Number(req.headers.get("content-length") ?? "0");
+  if (Number.isFinite(declaredLen) && declaredLen > MAX_BODY_BYTES) {
+    return NextResponse.json(
+      { ok: false, error: "payload too large" },
+      { status: 413 }
+    );
+  }
 
-  if (await rateLimited(ip)) {
+  const xff = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  const ip = xff || req.headers.get("x-real-ip") || null;
+  if (!ip) {
+    // No client-identifying header. In prod on Vercel this never happens;
+    // the shared "?" bucket approach would let unidentifiable clients
+    // exhaust the site-wide quota. Log for visibility and skip the
+    // per-IP rate limit — the same-origin + CT + email-regex gates still
+    // apply.
+    console.warn("[visitor] request without identifying IP header");
+  } else if (await rateLimited(ip)) {
     return NextResponse.json({ ok: false, error: "too many requests" }, { status: 429 });
   }
 
+  const rawText = await req.text();
+  if (rawText.length > MAX_BODY_BYTES) {
+    return NextResponse.json(
+      { ok: false, error: "payload too large" },
+      { status: 413 }
+    );
+  }
   let body: unknown;
   try {
-    body = await req.json();
+    body = rawText ? JSON.parse(rawText) : null;
   } catch {
     return NextResponse.json({ ok: false, error: "bad json" }, { status: 400 });
   }
@@ -110,7 +130,7 @@ export async function POST(req: Request) {
     );
   }
 
-  const safeIp = sanitize(ip, 64);
+  const safeIp = sanitize(ip ?? "?", 64);
   const safeUa = sanitize(req.headers.get("user-agent") ?? "?", 256);
   const safeRef = sanitize(req.headers.get("referer") ?? "?", 256);
 
@@ -154,3 +174,16 @@ export async function POST(req: Request) {
 
   return NextResponse.json({ ok: true });
 }
+
+const methodNotAllowed = () =>
+  NextResponse.json(
+    { ok: false, error: "method not allowed" },
+    { status: 405, headers: { Allow: "POST" } }
+  );
+
+export const GET = methodNotAllowed;
+export const PUT = methodNotAllowed;
+export const PATCH = methodNotAllowed;
+export const DELETE = methodNotAllowed;
+export const OPTIONS = methodNotAllowed;
+export const HEAD = methodNotAllowed;
