@@ -72,9 +72,6 @@ export default function GitGraph() {
         padding: 20,
       }}
     >
-      <p className="text-muted mb-3 select-none">
-        $ git log --oneline --graph --all
-      </p>
       <ul className="space-y-1.5">
         {log.map((e) => (
           <li key={e.hash} className="flex items-baseline gap-2 flex-wrap">

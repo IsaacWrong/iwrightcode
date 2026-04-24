@@ -16,7 +16,7 @@ export default function LastActivity({
       style={{ lineHeight: 1.6 }}
     >
       <span className="opacity-60">{"// "}</span>
-      last push:{" "}
+      last update:{" "}
       <span className="text-fg">{when}</span>
       <span className="opacity-60"> · </span>
       <span className="text-fg">{latest.text}</span>

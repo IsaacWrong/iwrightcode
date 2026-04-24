@@ -23,7 +23,7 @@ const stack = [
 export default function About() {
   return (
     <section id="about" className="py-24 px-6 md:px-10 lg:px-16">
-      <SectionHeading caption="// about" command="cat about.md" />
+      <SectionHeading caption="// about" title="A bit about me" />
       <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mt-10">
         <div
           className="md:col-span-3 font-sans text-[15px] text-fg space-y-6"
@@ -36,19 +36,19 @@ export default function About() {
             is informed by the domain I live in.
           </p>
           <p>
-            My focus is vertical SaaS for financial services, fintech tooling,
-            and AI-native applications. Clients are independent agencies, small
-            practices, and early-stage founders who need production code — not
-            prototypes, not slideware. Domain fluency is part of the deliverable.
+            My focus is custom software that drives real revenue — for
+            financial services firms, independent agencies, small practices,
+            and early-stage founders. Clients come to me for production code,
+            not prototypes or slideware. Domain fluency is part of the
+            deliverable.
           </p>
           <p>
-            Agentic development isn&apos;t a buzzword on my resume — it&apos;s
-            the operating model. Claude Code, custom subagents, and MCP servers
-            ship the bulk of production code while I architect, review, and
-            decide. Lightning-fast implementations, TypeScript everywhere, and
-            a shorter path from idea to production than a small team can usually
-            manage. Available for contract work and fractional technical
-            leadership.
+            AI isn&apos;t a checkbox on my resume — it&apos;s the operating
+            model. Claude Code, custom subagents, and MCP servers ship the bulk
+            of production code while I architect, review, and decide. The
+            result: fast delivery, rock-solid code, and a shorter path from
+            idea to revenue than a small team can usually manage. Available
+            for contract work and fractional technical leadership.
           </p>
         </div>
         <aside

@@ -123,12 +123,12 @@ export default function Terminal({ activity = [] }: Props) {
     return () => clearTimeout(t);
   }, [phase, authStep]);
 
-  // focus input when needed
+  // focus input on phase transition only (avoid stealing AT focus on every command)
   useEffect(() => {
     if (phase === "ready" || phase === "shell") {
       inputRef.current?.focus({ preventScroll: true });
     }
-  }, [phase, blocks.length]);
+  }, [phase]);
 
   // auto-scroll terminal to bottom on new content
   useEffect(() => {
@@ -214,7 +214,7 @@ export default function Terminal({ activity = [] }: Props) {
           next.push({
             kind: "output",
             tone: "muted",
-            lines: ["isaac.wright — full-stack developer · fintech · ai-native"],
+            lines: ["isaac.wright — building ai-driven software that drives revenue"],
           });
           break;
         case "ls": {
@@ -236,8 +236,8 @@ export default function Terminal({ activity = [] }: Props) {
             next.push({
               kind: "output",
               lines: [
-                "isaac wright — financial advisor by day, ai-driven dev by night.",
-                "vertical saas for fintech, internal tooling, agentic systems.",
+                "isaac wright — financial advisor by day, ai-driven developer by night.",
+                "custom software for financial services, internal tools, ai products.",
                 "claude code + custom subagents ship the bulk of production code.",
               ],
             });
@@ -501,10 +501,13 @@ export default function Terminal({ activity = [] }: Props) {
         border: "0.5px solid var(--border)",
         borderRadius: 10,
       }}
-      onClick={() => {
-        if (phase === "ready" || phase === "shell") {
-          inputRef.current?.focus({ preventScroll: true });
-        }
+      onClick={(e) => {
+        if (phase !== "ready" && phase !== "shell") return;
+        const target = e.target as HTMLElement;
+        if (target.closest("a, button, input, textarea")) return;
+        const root = e.currentTarget;
+        if (root.contains(document.activeElement) && document.activeElement !== root) return;
+        inputRef.current?.focus({ preventScroll: true });
       }}
     >
       <div
@@ -573,11 +576,19 @@ export default function Terminal({ activity = [] }: Props) {
                 inputMode="email"
                 placeholder="you@domain.com"
                 aria-label="email"
+                aria-invalid={emailError ? true : undefined}
+                aria-describedby={emailError ? "terminal-email-error" : undefined}
                 className="flex-1 min-w-0 bg-transparent outline-none text-fg placeholder:text-muted/60 caret-transparent font-mono"
               />
             </form>
             {emailError ? (
-              <div className="text-[#FF7B72] mt-1">{emailError}</div>
+              <div
+                id="terminal-email-error"
+                role="alert"
+                className="text-[#FF7B72] mt-1"
+              >
+                {emailError}
+              </div>
             ) : null}
           </div>
         ) : null}
@@ -601,9 +612,11 @@ export default function Terminal({ activity = [] }: Props) {
         {/* shell history */}
         {phase === "shell" ? (
           <>
-            {blocks.map((b, i) => (
-              <ShellRow key={i} block={b} />
-            ))}
+            <div role="log" aria-live="polite" aria-label="terminal output">
+              {blocks.map((b, i) => (
+                <ShellRow key={i} block={b} />
+              ))}
+            </div>
             <form
               onSubmit={(e) => {
                 e.preventDefault();

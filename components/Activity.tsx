@@ -31,7 +31,7 @@ export default function Activity({
     <section id="activity" className="py-24 px-6 md:px-10 lg:px-16">
       <SectionHeading
         caption="// activity"
-        command="gh activity --user IsaacWrong"
+        title="What I've been shipping"
       />
       <div className="mt-10">
         <div

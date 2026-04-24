@@ -44,8 +44,8 @@ export default function Hero({
             className="font-sans text-[15px] text-muted mt-5"
             style={{ lineHeight: 1.6, maxWidth: 480 }}
           >
-            Full-stack developer specializing in vertical SaaS, fintech, and
-            AI-native applications.
+            Using AI to drive revenue-multiplying outcomes for founders and
+            small teams.
           </p>
 
           <div className="mt-5">
@@ -62,11 +62,11 @@ export default function Hero({
                 boxShadow: "0 0 0 0 rgba(126, 231, 135, 0)",
               }}
             >
-              ./start-project
+              Start a project
               <span
                 className="overflow-hidden inline-block whitespace-nowrap max-w-0 group-hover/start:max-w-[140px] transition-[max-width] duration-300 ease-out"
               >
-                <span className="ml-1 text-[#1F6F2E]">--hire-me</span>
+                <span className="ml-1 text-[#1F6F2E]">→ let&apos;s talk</span>
               </span>
             </a>
             <a
@@ -78,7 +78,7 @@ export default function Hero({
                 border: "0.5px solid var(--border)",
               }}
             >
-              view work
+              See my work
             </a>
           </div>
         </div>

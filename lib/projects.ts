@@ -24,7 +24,7 @@ export const projects: Project[] = [
     name: "Rectorfolio",
     tagline:
       "Social investing platform with an AI co-pilot that creates strategies from natural language, executes trades, and explains every rebalance.",
-    summary: "AI-native social investing with a persistent co-pilot.",
+    summary: "Social investing with a persistent AI co-pilot.",
     stack: ["Next.js 16", "Vercel AI SDK", "Anthropic", "Supabase", "Inngest"],
     status: "building",
   },
