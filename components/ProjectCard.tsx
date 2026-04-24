@@ -1,10 +1,27 @@
 import Link from "next/link";
 import type { Project } from "@/lib/projects";
 
+function diffLine(project: Project): { prefix: string; text: string; tone: "add" | "wip" } {
+  if (project.href) {
+    const isExternal = /^https?:\/\//.test(project.href);
+    if (isExternal) {
+      const host = project.href.replace(/^https?:\/\//, "").replace(/\/$/, "");
+      return { prefix: "+", text: `deploy → ${host}`, tone: "add" };
+    }
+    return { prefix: "+", text: `open → ${project.href}`, tone: "add" };
+  }
+  if (project.status === "shipped") {
+    return { prefix: "+", text: "status: shipped · private", tone: "add" };
+  }
+  return { prefix: "~", text: `status: ${project.status} · private`, tone: "wip" };
+}
+
 export default function ProjectCard({ project }: { project: Project }) {
+  const diff = diffLine(project);
+
   const inner = (
     <article
-      className="project-card bg-bg"
+      className={`project-card project-card-${diff.tone} bg-bg relative overflow-hidden`}
       style={{ borderRadius: 12, padding: 24 }}
     >
       <div className="flex items-center justify-between">
@@ -41,11 +58,15 @@ export default function ProjectCard({ project }: { project: Project }) {
           </li>
         ))}
       </ul>
+      <div className="project-card-diff">
+        <span className={`diff-prefix diff-${diff.tone}`}>{diff.prefix}</span>
+        <span className="diff-text">{diff.text}</span>
+      </div>
     </article>
   );
 
   if (!project.href) {
-    return <div>{inner}</div>;
+    return <div className="group">{inner}</div>;
   }
 
   const isExternal = /^https?:\/\//.test(project.href);
@@ -53,7 +74,7 @@ export default function ProjectCard({ project }: { project: Project }) {
     return (
       <a
         href={project.href}
-        className="project-card-wrap block"
+        className="project-card-wrap group block"
         aria-label={project.name}
         target="_blank"
         rel="noopener noreferrer"
@@ -66,7 +87,7 @@ export default function ProjectCard({ project }: { project: Project }) {
   return (
     <Link
       href={project.href}
-      className="project-card-wrap block"
+      className="project-card-wrap group block"
       aria-label={project.name}
     >
       {inner}

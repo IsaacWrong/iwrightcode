@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Wordmark from "./Wordmark";
+import StatusBar from "./StatusBar";
 
 const links = [
   { href: "/#work", label: "work" },
@@ -13,11 +14,17 @@ export default function Nav() {
       className="sticky top-0 z-50 w-full backdrop-blur-md bg-bg/80"
       style={{ borderBottom: "0.5px solid var(--border-subtle)" }}
     >
-      <div className="flex items-center justify-between py-4 px-6 md:px-10 lg:px-16">
-        <Link href="/" className="text-[14px] hover:opacity-80 transition-opacity">
-          <Wordmark blink />
+      <div className="flex items-center gap-6 py-4 px-6 md:px-10 lg:px-16">
+        <Link
+          href="/"
+          className="text-[14px] hover:opacity-80 transition-opacity shrink-0"
+        >
+          <Wordmark />
         </Link>
-        <ul className="flex items-center gap-6">
+        <div className="flex-1 flex justify-center">
+          <StatusBar />
+        </div>
+        <ul className="flex items-center gap-6 shrink-0">
           {links.map((l) => (
             <li key={l.href}>
               <Link

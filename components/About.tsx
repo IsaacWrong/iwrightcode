@@ -1,3 +1,6 @@
+import SectionHeading from "./SectionHeading";
+import GitGraph from "./GitGraph";
+
 const stack = [
   {
     label: "frontend",
@@ -20,13 +23,7 @@ const stack = [
 export default function About() {
   return (
     <section id="about" className="py-24 px-6 md:px-10 lg:px-16">
-      <p className="font-mono text-[11px] text-muted">{"// about"}</p>
-      <h2
-        className="font-mono font-medium text-[28px] text-fg mt-2"
-        style={{ lineHeight: 1.3 }}
-      >
-        who am i?
-      </h2>
+      <SectionHeading caption="// about" command="cat about.md" />
       <div className="grid grid-cols-1 md:grid-cols-5 gap-12 mt-10">
         <div
           className="md:col-span-3 font-sans text-[15px] text-fg space-y-6"
@@ -80,6 +77,13 @@ export default function About() {
             ))}
           </dl>
         </aside>
+      </div>
+
+      <div className="mt-16">
+        <p className="font-mono text-[11px] text-muted">{"// timeline"}</p>
+        <div className="mt-4">
+          <GitGraph />
+        </div>
       </div>
     </section>
   );

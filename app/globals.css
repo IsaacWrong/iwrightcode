@@ -6,6 +6,9 @@
   --muted: #7D8590;
   --border: #30363D;
   --border-subtle: #21262D;
+  --accent-add: #7ee787;
+  --accent-wip: #FEBC2E;
+  --accent-rm: #FF7B72;
 }
 
 @theme inline {
@@ -36,12 +39,13 @@ body {
 }
 
 .animate-blink {
-  animation: blink 1s steps(2) infinite;
+  animation: blink 0.7s steps(2) infinite;
 }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   .animate-blink { animation: none; }
+  .project-card-diff { transition: none !important; }
 }
 
 *:focus-visible {
@@ -55,15 +59,82 @@ body {
   color: var(--bg);
 }
 
+/* ── project cards ─────────────────────────────────────────────── */
+
 .project-card {
   border: 0.5px solid var(--border);
-  transition: border-color 200ms;
+  transition: border-color 200ms, box-shadow 200ms;
+}
+
+.project-card::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: transparent;
+  transition: background 200ms;
 }
 
 .project-card-wrap:hover .project-card,
-.project-card-wrap:focus-visible .project-card {
+.project-card-wrap:focus-visible .project-card,
+.group:hover .project-card {
   border-color: var(--fg);
 }
+
+.project-card-wrap:hover .project-card-add::before,
+.project-card-wrap:focus-visible .project-card-add::before,
+.group:hover .project-card-add::before {
+  background: var(--accent-add);
+}
+
+.project-card-wrap:hover .project-card-wip::before,
+.project-card-wrap:focus-visible .project-card-wip::before,
+.group:hover .project-card-wip::before {
+  background: var(--accent-wip);
+}
+
+.project-card-diff {
+  margin-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  font-size: 11px;
+  line-height: 1.4;
+  max-height: 0;
+  opacity: 0;
+  transform: translateY(-2px);
+  overflow: hidden;
+  transition: max-height 220ms ease, opacity 200ms ease, transform 220ms ease;
+}
+
+.group:hover .project-card-diff,
+.project-card-wrap:hover .project-card-diff,
+.project-card-wrap:focus-visible .project-card-diff {
+  max-height: 28px;
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.diff-prefix {
+  font-weight: 600;
+}
+
+.diff-add {
+  color: var(--accent-add);
+}
+
+.diff-wip {
+  color: var(--accent-wip);
+}
+
+.diff-text {
+  color: var(--muted);
+}
+
+/* ── hairlines ─────────────────────────────────────────────────── */
 
 .hairline {
   border: 0.5px solid var(--border);
@@ -76,3 +147,13 @@ body {
 .hairline-subtle-b {
   border-bottom: 0.5px solid var(--border-subtle);
 }
+
+/* ── syntax tokens (contact object, code blocks) ───────────────── */
+
+.syntax-keyword { color: #FF7B72; }
+.syntax-var     { color: #D2A8FF; }
+.syntax-key     { color: #79C0FF; }
+.syntax-string  { color: #A5D6FF; }
+.syntax-type    { color: #FFA657; }
+.syntax-punct   { color: var(--muted); }
+.syntax-comment { color: var(--muted); font-style: italic; }

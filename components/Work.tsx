@@ -1,5 +1,6 @@
 import { projects, type Project } from "@/lib/projects";
 import ProjectCard from "./ProjectCard";
+import SectionHeading from "./SectionHeading";
 
 export default function Work() {
   const featured = projects.filter((p) => Boolean(p.href));
@@ -7,15 +8,7 @@ export default function Work() {
 
   return (
     <section id="work" className="py-24 px-6 md:px-10 lg:px-16">
-      <p className="font-mono text-[11px] text-muted">
-        {"// selected work"}
-      </p>
-      <h2
-        className="font-mono font-medium text-[28px] text-fg mt-2"
-        style={{ lineHeight: 1.3 }}
-      >
-        work
-      </h2>
+      <SectionHeading caption="// selected work" command="ls ./work" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
         {featured.map((p) => (
@@ -25,15 +18,12 @@ export default function Work() {
 
       {building.length > 0 ? (
         <div className="mt-16">
-          <p className="font-mono text-[11px] text-muted">
-            {"// also in the workshop"}
-          </p>
-          <h3
-            className="font-mono font-medium text-[20px] text-fg mt-2"
-            style={{ lineHeight: 1.3 }}
-          >
-            building
-          </h3>
+          <SectionHeading
+            caption="// also in the workshop"
+            command="ls ./workshop"
+            size="md"
+            as="h3"
+          />
           <ul className="mt-6 flex flex-col">
             {building.map((p) => (
               <BuildingRow key={p.slug} project={p} />

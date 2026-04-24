@@ -16,7 +16,7 @@ export const projects: Project[] = [
       "Commission tracking for insurance agents. Upload CSV/Excel from any carrier, reconcile earnings, and manage your book of business.",
     summary: "Commission tracking + reconciliation for insurance agents.",
     stack: ["Next.js 15", "Supabase", "Stripe", "PostHog", "Sentry"],
-    status: "building",
+    status: "shipped",
     href: "https://pcommissions.com",
   },
   {

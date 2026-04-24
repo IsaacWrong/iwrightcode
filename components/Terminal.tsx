@@ -29,8 +29,8 @@ const SCRIPT: Line[] = [
   { prompt: true, text: "", cursor: true },
 ];
 
-const CHAR_MS = 30;
-const LINE_PAUSE_MS = 400;
+const CHAR_MS = 14;
+const LINE_PAUSE_MS = 180;
 
 export default function Terminal() {
   const reduceMotion = useReducedMotion();
@@ -61,13 +61,25 @@ export default function Terminal() {
     const shown = isTyping ? line.text.slice(0, charIdx) : line.text;
     const key = `${i}-${line.text}`;
 
+    const filledCursor = (
+      <span
+        className="inline-block bg-fg align-baseline ml-[1px]"
+        style={{ width: 8, height: 15, verticalAlign: "-2px" }}
+        aria-hidden="true"
+      />
+    );
+
     if (line.cursor) {
       return (
         <div key={key} className="flex items-center">
           <span className="text-fg mr-2">$</span>
           <span
-            className="inline-block bg-fg animate-blink"
-            style={{ width: 8, height: 15 }}
+            className="inline-block"
+            style={{
+              width: 8,
+              height: 15,
+              border: "1px solid var(--fg)",
+            }}
             aria-hidden="true"
           />
         </div>
@@ -79,6 +91,7 @@ export default function Terminal() {
         <div key={key}>
           <span className="text-fg mr-2">$</span>
           <span className="text-fg">{shown}</span>
+          {isTyping ? filledCursor : null}
         </div>
       );
     }
@@ -86,6 +99,7 @@ export default function Terminal() {
     return (
       <div key={key} className={line.mutedOutput ? "text-muted" : "text-fg"}>
         {shown}
+        {isTyping ? filledCursor : null}
       </div>
     );
   };
