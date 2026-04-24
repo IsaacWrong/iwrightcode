@@ -21,6 +21,26 @@ function token(): string | undefined {
   return process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 }
 
+const FETCH_TIMEOUT_MS = 5000;
+
+async function ghFetch(
+  url: string,
+  init: RequestInit & { next?: { revalidate?: number } } = {}
+): Promise<Response | null> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+  try {
+    return await fetch(url, { ...init, signal: ctrl.signal });
+  } catch (err) {
+    const reason =
+      err instanceof Error && err.name === "AbortError" ? "timeout" : "network";
+    console.warn(`[github] ${reason} on ${url}`, err);
+    return null;
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function fetchActivity(limit = 8): Promise<ActivityItem[]> {
   const t = token();
   const headers: Record<string, string> = {
@@ -30,31 +50,29 @@ export async function fetchActivity(limit = 8): Promise<ActivityItem[]> {
   };
   if (t) headers.Authorization = `Bearer ${t}`;
 
-  let res: Response;
-  try {
-    res = await fetch(
-      `https://api.github.com/users/${GH_USER}/events/public?per_page=30`,
-      {
-        headers,
-        next: { revalidate: 3600 },
-      }
-    );
-  } catch {
+  const url = `https://api.github.com/users/${GH_USER}/events/public?per_page=30`;
+  const res = await ghFetch(url, { headers, next: { revalidate: 3600 } });
+  if (!res) return [];
+
+  if (!res.ok) {
+    console.warn(`[github] fetchActivity status ${res.status}`);
     return [];
   }
 
-  if (!res.ok) return [];
-
-  let raw: RawEvent[];
+  let raw: unknown;
   try {
-    raw = (await res.json()) as RawEvent[];
-  } catch {
+    raw = await res.json();
+  } catch (err) {
+    console.warn("[github] fetchActivity JSON parse failed", err);
     return [];
   }
-  if (!Array.isArray(raw)) return [];
+  if (!Array.isArray(raw)) {
+    console.warn("[github] fetchActivity unexpected shape (not array)", raw);
+    return [];
+  }
 
   const items: ActivityItem[] = [];
-  for (const ev of raw) {
+  for (const ev of raw as RawEvent[]) {
     const formatted = formatEvent(ev);
     if (formatted) items.push(formatted);
     if (items.length >= limit) break;
@@ -67,6 +85,7 @@ function formatEvent(ev: RawEvent): ActivityItem | null {
   const repoShort = repo.split("/").slice(-1)[0] ?? repo;
   const repoHref = `https://github.com/${repo}`;
   const when = new Date(ev.created_at);
+  if (Number.isNaN(when.getTime())) return null;
 
   switch (ev.type) {
     case "PushEvent": {
@@ -221,8 +240,121 @@ function formatEvent(ev: RawEvent): ActivityItem | null {
   }
 }
 
+export type ContributionDay = {
+  date: string;
+  count: number;
+  level: 0 | 1 | 2 | 3 | 4;
+};
+
+export type Contributions = {
+  weeks: ContributionDay[][];
+  totalYear: number;
+  activeDaysYear: number;
+};
+
+const CONTRIB_LEVEL: Record<string, 0 | 1 | 2 | 3 | 4> = {
+  NONE: 0,
+  FIRST_QUARTILE: 1,
+  SECOND_QUARTILE: 2,
+  THIRD_QUARTILE: 3,
+  FOURTH_QUARTILE: 4,
+};
+
+type ContribGraphQLResponse = {
+  data?: {
+    user?: {
+      contributionsCollection?: {
+        contributionCalendar?: {
+          totalContributions?: number;
+          weeks?: Array<{
+            contributionDays?: Array<{
+              date: string;
+              contributionCount: number;
+              contributionLevel: string;
+            }>;
+          }>;
+        };
+      };
+    };
+  };
+};
+
+export async function fetchContributions(): Promise<Contributions | null> {
+  const t = token();
+  if (!t) return null;
+
+  const query = `
+    query($user: String!) {
+      user(login: $user) {
+        contributionsCollection {
+          contributionCalendar {
+            totalContributions
+            weeks {
+              contributionDays {
+                date
+                contributionCount
+                contributionLevel
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const res = await ghFetch("https://api.github.com/graphql", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${t}`,
+      "Content-Type": "application/json",
+      "User-Agent": "iwrightcode-portfolio",
+    },
+    body: JSON.stringify({
+      query,
+      variables: { user: GH_USER },
+    }),
+    next: { revalidate: 3600 },
+  });
+  if (!res) return null;
+
+  if (!res.ok) {
+    console.warn(`[github] fetchContributions status ${res.status}`);
+    return null;
+  }
+
+  let body: ContribGraphQLResponse;
+  try {
+    body = (await res.json()) as ContribGraphQLResponse;
+  } catch (err) {
+    console.warn("[github] fetchContributions JSON parse failed", err);
+    return null;
+  }
+
+  const calendar = body.data?.user?.contributionsCollection?.contributionCalendar;
+  if (!calendar) return null;
+
+  const rawWeeks = calendar.weeks ?? [];
+  const weeks: ContributionDay[][] = rawWeeks.map((w) =>
+    (w.contributionDays ?? []).map((d) => ({
+      date: d.date,
+      count: d.contributionCount ?? 0,
+      level: CONTRIB_LEVEL[d.contributionLevel] ?? 0,
+    }))
+  );
+
+  const activeDaysYear = weeks.flat().filter((d) => d.count > 0).length;
+
+  return {
+    weeks,
+    totalYear: calendar.totalContributions ?? 0,
+    activeDaysYear,
+  };
+}
+
 export function relativeTime(d: Date, now: Date = new Date()): string {
-  const diff = Math.max(0, now.getTime() - d.getTime());
+  const t = d.getTime();
+  if (Number.isNaN(t)) return "?";
+  const diff = Math.max(0, now.getTime() - t);
   const m = Math.floor(diff / 60_000);
   if (m < 1) return "now";
   if (m < 60) return `${m}m`;

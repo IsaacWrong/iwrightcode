@@ -1,12 +1,15 @@
 import Terminal from "./Terminal";
 import SpotlightGrid from "./SpotlightGrid";
-import CurrentlyLine from "./CurrentlyLine";
-import PipeDiagram from "./PipeDiagram";
-import { fetchActivity } from "@/lib/github";
+import LastActivity from "./LastActivity";
+import type { ActivityItem } from "@/lib/github";
 
-export default async function Hero() {
-  const activity = await fetchActivity(8);
-
+export default function Hero({
+  activity,
+  now,
+}: {
+  activity: ActivityItem[];
+  now: Date;
+}) {
   return (
     <section
       id="top"
@@ -41,21 +44,30 @@ export default async function Hero() {
             className="font-sans text-[15px] text-muted mt-5"
             style={{ lineHeight: 1.6, maxWidth: 480 }}
           >
-            Full-stack developer specializing in vertical SaaS, fintech, and
-            AI-native applications.
+            Using AI to drive revenue-multiplying outcomes for founders and
+            small teams.
           </p>
 
           <div className="mt-5">
-            <CurrentlyLine />
+            <LastActivity items={activity} now={now} />
           </div>
 
           <div className="flex flex-wrap items-center gap-3 mt-8">
             <a
               href="#contact"
-              className="font-mono font-medium text-[13px] bg-fg text-bg hover:opacity-90 transition-opacity"
-              style={{ padding: "10px 18px", borderRadius: 6 }}
+              className="group/start inline-flex items-center font-mono font-medium text-[13px] bg-fg text-bg hover:-translate-y-[1px] transition-transform duration-150"
+              style={{
+                padding: "10px 18px",
+                borderRadius: 6,
+                boxShadow: "0 0 0 0 rgba(126, 231, 135, 0)",
+              }}
             >
-              ./start-project
+              Start a project
+              <span
+                className="overflow-hidden inline-block whitespace-nowrap max-w-0 group-hover/start:max-w-[140px] transition-[max-width] duration-300 ease-out"
+              >
+                <span className="ml-1 text-[#1F6F2E]">→ let&apos;s talk</span>
+              </span>
             </a>
             <a
               href="#work"
@@ -66,12 +78,8 @@ export default async function Hero() {
                 border: "0.5px solid var(--border)",
               }}
             >
-              view work
+              See my work
             </a>
-          </div>
-
-          <div className="mt-10 hidden md:block">
-            <PipeDiagram />
           </div>
         </div>
 

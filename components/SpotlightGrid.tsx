@@ -14,6 +14,7 @@ export default function SpotlightGrid() {
     let raf = 0;
     let pendingX = 50;
     let pendingY = 50;
+    let listening = false;
 
     const apply = () => {
       raf = 0;
@@ -34,20 +35,41 @@ export default function SpotlightGrid() {
       if (!raf) raf = requestAnimationFrame(apply);
     };
 
-    window.addEventListener("pointermove", onMove, { passive: true });
-    window.addEventListener("pointerleave", onLeave);
-    return () => {
+    const attach = () => {
+      if (listening) return;
+      window.addEventListener("pointermove", onMove, { passive: true });
+      window.addEventListener("pointerleave", onLeave);
+      listening = true;
+    };
+    const detach = () => {
+      if (!listening) return;
       window.removeEventListener("pointermove", onMove);
       window.removeEventListener("pointerleave", onLeave);
+      listening = false;
+    };
+
+    // Only listen while the spotlight's host is in the viewport — no
+    // point tracking the pointer once the hero has scrolled away.
+    const io = new IntersectionObserver(
+      ([entry]) => (entry.isIntersecting ? attach() : detach()),
+      { threshold: 0 }
+    );
+    io.observe(node);
+
+    return () => {
+      io.disconnect();
+      detach();
       if (raf) cancelAnimationFrame(raf);
     };
   }, []);
 
   return (
     <div
-      ref={ref}
       aria-hidden="true"
-      className="spotlight-grid pointer-events-none absolute inset-0 -z-10"
-    />
+      className="pointer-events-none absolute inset-0 -z-10"
+    >
+      <div className="spotlight-dots-base absolute inset-0" />
+      <div ref={ref} className="spotlight-dots-lift absolute inset-0" />
+    </div>
   );
 }

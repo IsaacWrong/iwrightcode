@@ -54,6 +54,10 @@ export default function CommandLayer() {
   const [query, setQuery] = useState("");
   const [active, setActive] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
+  const paletteDialogRef = useRef<HTMLDivElement>(null);
+  const shortcutsDialogRef = useRef<HTMLDivElement>(null);
+  const shortcutsCloseRef = useRef<HTMLButtonElement>(null);
+  const lastFocusedRef = useRef<HTMLElement | null>(null);
 
   const showToast = useCallback((msg: string) => {
     setToast(msg);
@@ -192,6 +196,47 @@ export default function CommandLayer() {
     }
   }, [paletteOpen]);
 
+  useEffect(() => {
+    if (shortcutsOpen) {
+      requestAnimationFrame(() => shortcutsCloseRef.current?.focus());
+    }
+  }, [shortcutsOpen]);
+
+  useEffect(() => {
+    const anyOpen = paletteOpen || shortcutsOpen;
+    if (anyOpen && !lastFocusedRef.current) {
+      lastFocusedRef.current = document.activeElement as HTMLElement | null;
+    } else if (!anyOpen && lastFocusedRef.current) {
+      const el = lastFocusedRef.current;
+      lastFocusedRef.current = null;
+      requestAnimationFrame(() => el.focus?.());
+    }
+  }, [paletteOpen, shortcutsOpen]);
+
+  const trapTab = (container: HTMLElement | null, e: React.KeyboardEvent) => {
+    if (e.key !== "Tab" || !container) return;
+    const nodes = container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])'
+    );
+    const list = Array.from(nodes);
+    if (list.length === 0) {
+      e.preventDefault();
+      return;
+    }
+    const curr = document.activeElement as HTMLElement | null;
+    const idx = curr ? list.indexOf(curr) : -1;
+    const forward = !e.shiftKey;
+    const next = forward
+      ? idx + 1 >= list.length
+        ? 0
+        : idx + 1
+      : idx - 1 < 0
+        ? list.length - 1
+        : idx - 1;
+    e.preventDefault();
+    list[next].focus();
+  };
+
   // global key handler
   useEffect(() => {
     let goPending = false;
@@ -317,12 +362,14 @@ export default function CommandLayer() {
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setPaletteOpen(false);
           }}
+          onKeyDown={(e) => trapTab(paletteDialogRef.current, e)}
         >
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
             aria-hidden="true"
           />
           <div
+            ref={paletteDialogRef}
             className="relative w-full max-w-[560px] overflow-hidden"
             style={{
               background: "#010409",
@@ -346,6 +393,13 @@ export default function CommandLayer() {
                 placeholder="type a command…"
                 spellCheck={false}
                 autoComplete="off"
+                role="combobox"
+                aria-controls="cmdk-listbox"
+                aria-expanded={paletteOpen}
+                aria-autocomplete="list"
+                aria-activedescendant={
+                  filtered[active] ? `cmdk-opt-${filtered[active].id}` : undefined
+                }
                 className="flex-1 bg-transparent outline-none font-mono text-[14px] text-fg placeholder:text-muted"
                 style={{ padding: "14px 0" }}
               />
@@ -354,6 +408,7 @@ export default function CommandLayer() {
               </span>
             </div>
             <ul
+              id="cmdk-listbox"
               className="max-h-[55vh] overflow-y-auto py-2"
               role="listbox"
               aria-label="Commands"
@@ -376,8 +431,10 @@ export default function CommandLayer() {
                           <li key={item.id}>
                             <button
                               type="button"
+                              id={`cmdk-opt-${item.id}`}
                               role="option"
                               aria-selected={isActive}
+                              tabIndex={-1}
                               onMouseEnter={() => setActive(idx)}
                               onClick={() => {
                                 item.run();
@@ -434,12 +491,14 @@ export default function CommandLayer() {
           onMouseDown={(e) => {
             if (e.target === e.currentTarget) setShortcutsOpen(false);
           }}
+          onKeyDown={(e) => trapTab(shortcutsDialogRef.current, e)}
         >
           <div
             className="absolute inset-0 bg-black/60 backdrop-blur-[2px]"
             aria-hidden="true"
           />
           <div
+            ref={shortcutsDialogRef}
             className="relative w-full max-w-[420px]"
             style={{
               background: "#010409",
@@ -456,6 +515,7 @@ export default function CommandLayer() {
                 {"// keyboard shortcuts"}
               </span>
               <button
+                ref={shortcutsCloseRef}
                 type="button"
                 onClick={() => setShortcutsOpen(false)}
                 className="font-mono text-[10px] text-muted hairline px-1.5 py-0.5 rounded hover:text-fg"

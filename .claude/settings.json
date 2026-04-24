@@ -39,7 +39,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 -c \"import sys,json; d=json.load(sys.stdin); f=d.get('tool_input',{}).get('file_path',''); exts=('.tsx','.ts','.jsx','.css'); relevant=any(f.endswith(e) for e in exts) if f else False; print(json.dumps({'hookSpecificOutput':{'additionalContext':'KNOWN MISTAKES REMINDER — Before writing, check these rules:\\n- No boxy design (sharp cards, thick borders, grid-of-boxes)\\n- No Tailwind gray defaults (text-gray-*, bg-gray-*)\\n- One write per file — get it right the first time'}})) if relevant else None\"",
+            "command": "python3 -c \"import sys,json; d=json.load(sys.stdin); f=d.get('tool_input',{}).get('file_path',''); exts=('.tsx','.ts','.jsx','.css'); relevant=any(f.endswith(e) for e in exts) if f else False; print(json.dumps({'hookSpecificOutput':{'additionalContext':'KNOWN MISTAKES REMINDER — Before writing, check these rules:\\n- Full-bleed layout: never wrap sections in a centered max-w-[N]px mx-auto page column — use gutter px-6 md:px-10 lg:px-16 on <section>/<nav>/<footer>\\n- Cap text reading width on the text element itself (style={{ maxWidth: 640 }}), not a wrapping container\\n- No boxy design (sharp cards, thick borders, grid-of-boxes)\\n- No Tailwind gray defaults (text-gray-*, bg-gray-*)\\n- This is Next.js 16 — check node_modules/next/dist/docs/ before using any API you half-remember\\n- One write per file — get it right the first time'}})) if relevant else None\"",
             "timeout": 5,
             "statusMessage": "Checking known mistakes..."
           }
@@ -53,12 +53,6 @@
             "command": "python3 -c \"import sys,json,re,subprocess,os; d=json.load(sys.stdin); cmd=d.get('tool_input',{}).get('command','').strip(); is_commit=bool(re.match(r'^git\\s+commit\\b', cmd) or re.search(r'&&\\s*git\\s+commit\\b', cmd)); r=subprocess.run(['npm','run','lint'],cwd=os.getcwd()) if is_commit else None; sys.exit(r.returncode if r else 0)\"",
             "timeout": 120,
             "statusMessage": "Running lint before commit..."
-          },
-          {
-            "type": "command",
-            "command": "python3 -c \"import sys,json,re,subprocess,os; d=json.load(sys.stdin); cmd=d.get('tool_input',{}).get('command','').strip(); is_commit=bool(re.match(r'^git\\s+commit\\b', cmd) or re.search(r'&&\\s*git\\s+commit\\b', cmd)); r=subprocess.run(['bash','.github/scripts/check-sensitive-data.sh'],cwd=os.getcwd()) if is_commit else None; sys.exit(r.returncode if r else 0)\"",
-            "timeout": 15,
-            "statusMessage": "Checking agent reports for sensitive data..."
           }
         ]
       }

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import CommandLayer from "@/components/CommandLayer";
 import BootSequence from "@/components/BootSequence";
 
@@ -20,7 +21,7 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://iwrightcode.com"),
   title: "iwrightcode_ — Isaac Wright, full-stack developer",
   description:
-    "Full-stack developer specializing in vertical SaaS, fintech, and AI-native applications.",
+    "Using AI to drive revenue-multiplying outcomes for founders and small teams.",
   openGraph: {
     title: "iwrightcode_",
     description: "build. ship. repeat.",
@@ -44,9 +45,16 @@ export default function RootLayout({
       className={`${jetbrainsMono.variable} ${inter.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-bg text-fg">
+        <a
+          href="#top"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:z-50 focus:px-3 focus:py-2 focus:bg-fg focus:text-bg focus:font-mono focus:text-[12px] focus:rounded"
+        >
+          skip to content
+        </a>
         {children}
         <CommandLayer />
         <BootSequence />
+        <Analytics />
       </body>
     </html>
   );

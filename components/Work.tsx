@@ -8,7 +8,7 @@ export default function Work() {
 
   return (
     <section id="work" className="py-24 px-6 md:px-10 lg:px-16">
-      <SectionHeading caption="// selected work" command="ls ./work" />
+      <SectionHeading caption="// selected work" title="Recent projects" />
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-10">
         {featured.map((p) => (
@@ -19,8 +19,8 @@ export default function Work() {
       {building.length > 0 ? (
         <div className="mt-16">
           <SectionHeading
-            caption="// also in the workshop"
-            command="ls ./workshop"
+            caption="// in the workshop"
+            title="Workshop"
             size="md"
             as="h3"
           />

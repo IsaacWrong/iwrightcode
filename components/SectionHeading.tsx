@@ -2,14 +2,14 @@ import TypeOnScroll from "./TypeOnScroll";
 
 type Props = {
   caption: string;
-  command: string;
+  title: string;
   size?: "lg" | "md";
   as?: "h2" | "h3";
 };
 
 export default function SectionHeading({
   caption,
-  command,
+  title,
   size = "lg",
   as = "h2",
 }: Props) {
@@ -23,10 +23,7 @@ export default function SectionHeading({
         className={`font-mono font-medium ${sizeClass} text-fg mt-2`}
         style={{ lineHeight: 1.3 }}
       >
-        <span className="text-muted select-none mr-2" aria-hidden="true">
-          $
-        </span>
-        <TypeOnScroll text={command} />
+        <TypeOnScroll text={title} />
       </Tag>
     </header>
   );
