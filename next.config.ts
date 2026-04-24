@@ -1,6 +1,19 @@
 import type { NextConfig } from "next";
 import path from "path";
 
+const isDev = process.env.NODE_ENV !== "production";
+
+// React dev mode and Turbopack HMR require 'unsafe-eval' for callstack
+// reconstruction and fast refresh. Production never uses eval().
+const scriptSrc = [
+  "'self'",
+  "'unsafe-inline'",
+  isDev ? "'unsafe-eval'" : null,
+  "https://va.vercel-scripts.com",
+]
+  .filter(Boolean)
+  .join(" ");
+
 const securityHeaders = [
   {
     key: "Strict-Transport-Security",
@@ -17,7 +30,7 @@ const securityHeaders = [
     key: "Content-Security-Policy",
     value: [
       "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://va.vercel-scripts.com",
+      `script-src ${scriptSrc}`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: https:",
       "font-src 'self' data:",
