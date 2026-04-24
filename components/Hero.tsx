@@ -31,18 +31,18 @@ export default function Hero({
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start mt-6 relative">
         <div className="lg:col-span-5 flex flex-col">
           <h1
-            className="font-mono font-medium text-[28px] md:text-[36px] lg:text-[40px]"
+            className="font-mono font-medium text-[28px] md:text-[40px] lg:text-[52px] xl:text-[60px] 2xl:text-[68px]"
             style={{
               letterSpacing: "-0.5px",
-              lineHeight: 1.25,
-              maxWidth: 520,
+              lineHeight: 1.15,
+              maxWidth: "18ch",
             }}
           >
             I build software that actually ships.
           </h1>
           <p
-            className="font-sans text-[15px] text-muted mt-5"
-            style={{ lineHeight: 1.6, maxWidth: 480 }}
+            className="font-sans text-[15px] md:text-[16px] lg:text-[17px] xl:text-[18px] text-muted mt-5"
+            style={{ lineHeight: 1.6, maxWidth: "44ch" }}
           >
             Using AI to drive revenue-multiplying outcomes for founders and
             small teams.
