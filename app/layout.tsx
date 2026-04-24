@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Inter } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import CommandLayer from "@/components/CommandLayer";
 import BootSequence from "@/components/BootSequence";
 
@@ -47,6 +48,7 @@ export default function RootLayout({
         {children}
         <CommandLayer />
         <BootSequence />
+        <Analytics />
       </body>
     </html>
   );
