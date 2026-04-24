@@ -59,7 +59,7 @@ export const projects: Project[] = [
     slug: "bluegrass-home-services",
     name: "Bluegrass Home Services",
     tagline:
-      "Marketing site and quote pipeline for a Lexington, KY home-services company. Rate-limited quote form with direct-to-inbox delivery.",
+      "Marketing site and quote pipeline for a regional home-services company. Rate-limited quote form with direct-to-inbox delivery.",
     stack: ["Next.js 16", "Resend", "Upstash Redis", "Zod"],
     status: "shipped",
     href: "https://bluegrasshservices.com",

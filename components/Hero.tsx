@@ -1,7 +1,6 @@
 import Terminal from "./Terminal";
 import SpotlightGrid from "./SpotlightGrid";
-import CurrentlyLine from "./CurrentlyLine";
-import PipeDiagram from "./PipeDiagram";
+import LastActivity from "./LastActivity";
 import { fetchActivity } from "@/lib/github";
 
 export default async function Hero() {
@@ -46,16 +45,25 @@ export default async function Hero() {
           </p>
 
           <div className="mt-5">
-            <CurrentlyLine />
+            <LastActivity items={activity} />
           </div>
 
           <div className="flex flex-wrap items-center gap-3 mt-8">
             <a
               href="#contact"
-              className="font-mono font-medium text-[13px] bg-fg text-bg hover:opacity-90 transition-opacity"
-              style={{ padding: "10px 18px", borderRadius: 6 }}
+              className="group/start inline-flex items-center font-mono font-medium text-[13px] bg-fg text-bg hover:-translate-y-[1px] transition-transform duration-150"
+              style={{
+                padding: "10px 18px",
+                borderRadius: 6,
+                boxShadow: "0 0 0 0 rgba(126, 231, 135, 0)",
+              }}
             >
               ./start-project
+              <span
+                className="overflow-hidden inline-block whitespace-nowrap max-w-0 group-hover/start:max-w-[140px] transition-[max-width] duration-300 ease-out"
+              >
+                <span className="ml-1 text-[#1F6F2E]">--hire-me</span>
+              </span>
             </a>
             <a
               href="#work"
@@ -68,10 +76,6 @@ export default async function Hero() {
             >
               view work
             </a>
-          </div>
-
-          <div className="mt-10 hidden md:block">
-            <PipeDiagram />
           </div>
         </div>
 

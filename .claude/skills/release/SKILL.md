@@ -1,6 +1,6 @@
 ---
 name: release
-description: Weekly release workflow for Palm Commissions. Runs pre-flight checks, builds a changelog, creates the dev→main PR, then tags and publishes the GitHub release after merge.
+description: Release workflow for iwrightcode. Runs pre-flight checks, builds a changelog, creates the dev→main PR, then tags and publishes the GitHub release after merge.
 ---
 
 # release
