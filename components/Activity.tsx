@@ -25,10 +25,12 @@ export default function Activity({
   items,
   now,
   contributions,
+  failed = false,
 }: {
   items: ActivityItem[];
   now: Date;
   contributions: Contributions | null;
+  failed?: boolean;
 }) {
   return (
     <section id="activity" className="py-24 px-6 md:px-10 lg:px-16">
@@ -56,10 +58,17 @@ export default function Activity({
             </>
           ) : null}
           {items.length === 0 ? (
-            <div className="text-muted">
-              <span className="text-[#FF7B72] mr-2">!</span>
-              github api unavailable — try again later.
-            </div>
+            failed ? (
+              <div className="text-muted">
+                <span className="text-[#FF7B72] mr-2">!</span>
+                github api unavailable — try again later.
+              </div>
+            ) : (
+              <div className="text-muted">
+                <span className="opacity-60 mr-2">{"//"}</span>
+                no recent public activity — most work happens in private repos.
+              </div>
+            )
           ) : (
             <ul className="space-y-1.5">
               {items.map((it) => (

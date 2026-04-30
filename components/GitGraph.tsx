@@ -1,3 +1,5 @@
+import { fetchRepoCommitCount } from "@/lib/github";
+
 type Entry = {
   hash: string;
   ref?: string;
@@ -5,6 +7,7 @@ type Entry = {
   date: string;
   meta?: string;
   repo?: string;
+  liveCount?: boolean;
 };
 
 const log: Entry[] = [
@@ -22,6 +25,7 @@ const log: Entry[] = [
     date: "2026-04-22",
     meta: "65 commits",
     repo: "IsaacWrong/bluegrass-home-services",
+    liveCount: true,
   },
   {
     hash: "bc51582",
@@ -29,6 +33,7 @@ const log: Entry[] = [
     date: "2026-04-14",
     meta: "18 commits",
     repo: "IsaacWrong/autoform",
+    liveCount: true,
   },
   {
     hash: "7e0d8b7",
@@ -36,6 +41,7 @@ const log: Entry[] = [
     date: "2026-04-11",
     meta: "87 commits",
     repo: "IsaacWrong/exit-edge-ai",
+    liveCount: true,
   },
   {
     hash: "85ba6dd",
@@ -43,6 +49,7 @@ const log: Entry[] = [
     date: "2026-04-09",
     meta: "27 commits",
     repo: "IsaacWrong/rectorfolio",
+    liveCount: true,
   },
   {
     hash: "6050663",
@@ -50,6 +57,7 @@ const log: Entry[] = [
     date: "2026-03-17",
     meta: "156 commits",
     repo: "IsaacWrong/bookcheckr",
+    liveCount: true,
   },
   {
     hash: "2bc65ea",
@@ -57,6 +65,7 @@ const log: Entry[] = [
     date: "2025-08-19",
     meta: "748 commits",
     repo: "IsaacWrong/palm-commissions",
+    liveCount: true,
   },
   {
     hash: "0000000",
@@ -67,7 +76,29 @@ const log: Entry[] = [
   },
 ];
 
-export default function GitGraph() {
+export default async function GitGraph() {
+  const liveTargets = log
+    .map((e, i) => ({ entry: e, index: i }))
+    .filter((x) => x.entry.liveCount && x.entry.repo);
+
+  const counts = await Promise.all(
+    liveTargets.map(async (t) => {
+      const parts = (t.entry.repo as string).split("/");
+      if (parts.length !== 2 || !parts[0] || !parts[1]) {
+        return { index: t.index, count: null };
+      }
+      const n = await fetchRepoCommitCount(parts[0], parts[1]);
+      return { index: t.index, count: n };
+    })
+  );
+
+  const metaByIndex = new Map<number, string>();
+  for (const c of counts) {
+    if (c.count !== null) {
+      metaByIndex.set(c.index, `${c.count.toLocaleString()} commits`);
+    }
+  }
+
   return (
     <div
       className="font-mono text-[12px] overflow-x-auto"
@@ -81,8 +112,8 @@ export default function GitGraph() {
       }}
     >
       <ul className="space-y-1.5">
-        {log.map((e) => {
-          const meta = e.meta;
+        {log.map((e, i) => {
+          const meta = metaByIndex.get(i) ?? e.meta;
           return (
             <li key={e.hash} className="flex items-baseline gap-2 flex-wrap">
               <span className="text-[#FEBC2E] select-none">*</span>
