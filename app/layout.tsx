@@ -17,7 +17,7 @@ const inter = Inter({
   weight: ["400", "500"],
 });
 
-const SITE_URL = "https://iwrightcode.com";
+const SITE_URL = "https://www.iwrightcode.com";
 const SITE_NAME = "iwrightcode_";
 const TITLE = "iwrightcode_ — Isaac Wright, full-stack developer";
 const DESCRIPTION =
