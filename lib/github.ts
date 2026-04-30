@@ -81,17 +81,26 @@ export async function fetchActivity(
     return null;
   }
   if (!Array.isArray(raw)) {
-    console.warn("[github] fetchActivity unexpected shape (not array)", raw);
+    const shape =
+      typeof raw === "object" && raw !== null
+        ? Object.keys(raw as Record<string, unknown>).slice(0, 5)
+        : typeof raw;
+    console.warn("[github] fetchActivity unexpected shape (not array)", shape);
     return null;
   }
 
   const items: ActivityItem[] = [];
-  for (const ev of raw as RawEvent[]) {
-    if (ev.public !== true) {
-      const redacted = redactPrivateEvent(ev);
+  for (const ev of raw as unknown[]) {
+    if (typeof ev !== "object" || ev === null) {
+      console.warn("[github] fetchActivity skipping non-object element", typeof ev);
+      continue;
+    }
+    const evt = ev as RawEvent;
+    if (evt.public !== true) {
+      const redacted = redactPrivateEvent(evt);
       if (redacted) items.push(redacted);
     } else {
-      const formatted = formatEvent(ev);
+      const formatted = formatEvent(evt);
       if (formatted) items.push(formatted);
     }
     if (items.length >= limit) break;
@@ -367,6 +376,7 @@ type ContribGraphQLResponse = {
       };
     };
   };
+  errors?: Array<{ message?: string; type?: string }>;
 };
 
 export async function fetchContributions(): Promise<Contributions | null> {
@@ -417,6 +427,14 @@ export async function fetchContributions(): Promise<Contributions | null> {
     body = (await res.json()) as ContribGraphQLResponse;
   } catch (err) {
     console.warn("[github] fetchContributions JSON parse failed", err);
+    return null;
+  }
+
+  if (Array.isArray(body.errors) && body.errors.length > 0) {
+    console.warn(
+      "[github] fetchContributions GraphQL errors",
+      body.errors.map((e) => e.message ?? e.type ?? "unknown").slice(0, 5)
+    );
     return null;
   }
 

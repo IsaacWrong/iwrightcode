@@ -5,7 +5,49 @@ export const alt =
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-export default function OpengraphImage() {
+const JETBRAINS_MONO_400 =
+  "https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono@latest/latin-400-normal.ttf";
+const JETBRAINS_MONO_500 =
+  "https://cdn.jsdelivr.net/fontsource/fonts/jetbrains-mono@latest/latin-500-normal.ttf";
+
+async function loadFont(url: string): Promise<ArrayBuffer | null> {
+  try {
+    const res = await fetch(url, {
+      next: { revalidate: 60 * 60 * 24 * 30 },
+    });
+    if (!res.ok) return null;
+    return await res.arrayBuffer();
+  } catch {
+    return null;
+  }
+}
+
+export default async function OpengraphImage() {
+  const [regular, medium] = await Promise.all([
+    loadFont(JETBRAINS_MONO_400),
+    loadFont(JETBRAINS_MONO_500),
+  ]);
+
+  const fonts =
+    regular && medium
+      ? [
+          {
+            name: "JetBrains Mono",
+            data: regular,
+            style: "normal" as const,
+            weight: 400 as const,
+          },
+          {
+            name: "JetBrains Mono",
+            data: medium,
+            style: "normal" as const,
+            weight: 500 as const,
+          },
+        ]
+      : undefined;
+
+  const fontFamily = fonts ? "JetBrains Mono" : "monospace";
+
   return new ImageResponse(
     (
       <div
@@ -18,7 +60,7 @@ export default function OpengraphImage() {
           padding: "72px 80px",
           background: "#0D1117",
           color: "#E6EDF3",
-          fontFamily: "monospace",
+          fontFamily,
         }}
       >
         <div
@@ -92,6 +134,6 @@ export default function OpengraphImage() {
         </div>
       </div>
     ),
-    { ...size }
+    { ...size, fonts }
   );
 }

@@ -1,4 +1,4 @@
-import { projects, type Project } from "@/lib/projects";
+import { projects, isExternalHref, type Project } from "@/lib/projects";
 import ProjectCard from "./ProjectCard";
 import SectionHeading from "./SectionHeading";
 
@@ -62,7 +62,7 @@ function BuildingRow({ project }: { project: Project }) {
   );
 
   if (project.href) {
-    const isExternal = /^https?:\/\//.test(project.href);
+    const isExternal = isExternalHref(project.href);
     return (
       <li>
         <a
