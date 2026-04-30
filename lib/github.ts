@@ -5,6 +5,7 @@ export type ActivityItem = {
   tone: "push" | "merge" | "create" | "star" | "release" | "issue" | "delete" | "other";
   text: string;
   href?: string;
+  isPrivate?: boolean;
 };
 
 const GH_USER = "IsaacWrong";
@@ -13,6 +14,7 @@ type RawEvent = {
   id: string;
   type: string;
   created_at: string;
+  public?: boolean;
   repo: { name: string; url: string };
   payload: Record<string, unknown>;
 };
@@ -59,7 +61,7 @@ function ghHeaders(): Record<string, string> {
 export async function fetchActivity(
   limit = 8
 ): Promise<ActivityItem[] | null> {
-  const url = `https://api.github.com/users/${GH_USER}/events/public?per_page=30`;
+  const url = `https://api.github.com/users/${GH_USER}/events?per_page=30`;
   const res = await ghFetch(url, {
     headers: ghHeaders(),
     next: { revalidate: ACTIVITY_REVALIDATE_S },
@@ -85,11 +87,51 @@ export async function fetchActivity(
 
   const items: ActivityItem[] = [];
   for (const ev of raw as RawEvent[]) {
-    const formatted = formatEvent(ev);
-    if (formatted) items.push(formatted);
+    if (ev.public === false) {
+      const redacted = redactPrivateEvent(ev);
+      if (redacted) items.push(redacted);
+    } else {
+      const formatted = formatEvent(ev);
+      if (formatted) items.push(formatted);
+    }
     if (items.length >= limit) break;
   }
   return items;
+}
+
+function redactPrivateEvent(ev: RawEvent): ActivityItem | null {
+  const when = new Date(ev.created_at);
+  if (Number.isNaN(when.getTime())) return null;
+  const verb = privateVerbForType(ev.type);
+  return {
+    id: ev.id,
+    when,
+    prefix: "·",
+    tone: "other",
+    text: `${verb} in private repo`,
+    isPrivate: true,
+  };
+}
+
+function privateVerbForType(type: string): string {
+  switch (type) {
+    case "PushEvent":
+      return "pushed commits";
+    case "PullRequestEvent":
+      return "worked on a PR";
+    case "PullRequestReviewEvent":
+      return "reviewed a PR";
+    case "IssuesEvent":
+      return "worked on an issue";
+    case "ReleaseEvent":
+      return "shipped a release";
+    case "CreateEvent":
+      return "created branch/tag";
+    case "DeleteEvent":
+      return "deleted branch/tag";
+    default:
+      return "committed";
+  }
 }
 
 export async function fetchRepoCommitCount(
