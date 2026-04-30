@@ -87,7 +87,7 @@ export async function fetchActivity(
 
   const items: ActivityItem[] = [];
   for (const ev of raw as RawEvent[]) {
-    if (ev.public === false) {
+    if (ev.public !== true) {
       const redacted = redactPrivateEvent(ev);
       if (redacted) items.push(redacted);
     } else {
@@ -99,9 +99,12 @@ export async function fetchActivity(
   return items;
 }
 
+const PRIVATE_TIMESTAMP_ROUND_MS = 60 * 60 * 1000;
+
 function redactPrivateEvent(ev: RawEvent): ActivityItem | null {
-  const when = new Date(ev.created_at);
-  if (Number.isNaN(when.getTime())) return null;
+  const raw = new Date(ev.created_at).getTime();
+  if (Number.isNaN(raw)) return null;
+  const when = new Date(Math.floor(raw / PRIVATE_TIMESTAMP_ROUND_MS) * PRIVATE_TIMESTAMP_ROUND_MS);
   const verb = privateVerbForType(ev.type);
   return {
     id: ev.id,
