@@ -83,7 +83,9 @@ export default async function GitGraph() {
 
   const counts = await Promise.all(
     liveTargets.map(async (t) => {
-      const parts = (t.entry.repo as string).split("/");
+      const repo = t.entry.repo;
+      if (!repo) return { index: t.index, count: null };
+      const parts = repo.split("/");
       if (parts.length !== 2 || !parts[0] || !parts[1]) {
         return { index: t.index, count: null };
       }
