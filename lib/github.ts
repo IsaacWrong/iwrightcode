@@ -367,6 +367,7 @@ type ContribGraphQLResponse = {
       };
     };
   };
+  errors?: Array<{ message?: string; type?: string }>;
 };
 
 export async function fetchContributions(): Promise<Contributions | null> {
@@ -417,6 +418,14 @@ export async function fetchContributions(): Promise<Contributions | null> {
     body = (await res.json()) as ContribGraphQLResponse;
   } catch (err) {
     console.warn("[github] fetchContributions JSON parse failed", err);
+    return null;
+  }
+
+  if (Array.isArray(body.errors) && body.errors.length > 0) {
+    console.warn(
+      "[github] fetchContributions GraphQL errors",
+      body.errors.map((e) => e.message ?? e.type ?? "unknown").slice(0, 5)
+    );
     return null;
   }
 
