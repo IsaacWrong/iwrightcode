@@ -60,12 +60,12 @@ export default function Activity({
           {items.length === 0 ? (
             failed ? (
               <div className="text-muted">
-                <span className="text-[#FF7B72] mr-2">!</span>
+                <span aria-hidden="true" className="text-[#FF7B72] mr-2">!</span>
                 github api unavailable — try again later.
               </div>
             ) : (
               <div className="text-muted">
-                <span className="opacity-60 mr-2">{"//"}</span>
+                <span aria-hidden="true" className="opacity-60 mr-2">{"//"}</span>
                 no recent activity — try again later.
               </div>
             )
@@ -79,7 +79,7 @@ export default function Activity({
                   <span className="text-muted tabular-nums">
                     {relativeTime(it.when, now)}
                   </span>
-                  <span className={`${toneClass(it.tone)} text-center select-none`}>
+                  <span aria-hidden="true" className={`${toneClass(it.tone)} text-center select-none`}>
                     {it.prefix}
                   </span>
                   {it.href ? (
