@@ -167,15 +167,7 @@ export default function Terminal({ activity = [] }: Props) {
     return local.toLowerCase().slice(0, 16);
   }, [userEmail]);
 
-  const promptPrefix = (
-    <>
-      <span className="text-[#7ee787]">{username}</span>
-      <span className="text-muted">@iwrightcode</span>
-      <span className="text-muted">:</span>
-      <span className="text-[#79C0FF]">~</span>
-      <span className="text-muted mr-2">$</span>
-    </>
-  );
+  const promptPrefix = <TerminalPrompt user={username} />;
 
   const runCommand = useCallback(
     (raw: string) => {
@@ -649,15 +641,23 @@ export default function Terminal({ activity = [] }: Props) {
   );
 }
 
+function TerminalPrompt({ user }: { user: string }) {
+  return (
+    <>
+      <span className="text-[#7ee787]">{user}</span>
+      <span className="text-muted">@iwrightcode</span>
+      <span className="text-muted">:</span>
+      <span className="text-[#79C0FF]">~</span>
+      <span aria-hidden="true" className="text-muted mr-2">$</span>
+    </>
+  );
+}
+
 function ShellRow({ block }: { block: ShellBlock }) {
   if (block.kind === "command") {
     return (
       <div>
-        <span className="text-[#7ee787]">{block.user}</span>
-        <span className="text-muted">@iwrightcode</span>
-        <span className="text-muted">:</span>
-        <span className="text-[#79C0FF]">~</span>
-        <span className="text-muted mr-2">$</span>
+        <TerminalPrompt user={block.user} />
         <span className="text-fg">{block.text}</span>
       </div>
     );
