@@ -22,17 +22,19 @@ function token(): string | undefined {
 }
 
 const FETCH_TIMEOUT_MS = 10000;
+const COMMIT_COUNT_TIMEOUT_MS = 3000;
 const ACTIVITY_REVALIDATE_S = 600;
 const COMMIT_COUNT_REVALIDATE_S = 86400;
 
 async function ghFetch(
   url: string,
-  init: RequestInit & { next?: { revalidate?: number } } = {}
+  init: RequestInit & { next?: { revalidate?: number }; timeoutMs?: number } = {}
 ): Promise<Response | null> {
+  const { timeoutMs = FETCH_TIMEOUT_MS, ...rest } = init;
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   try {
-    return await fetch(url, { ...init, signal: ctrl.signal });
+    return await fetch(url, { ...rest, signal: ctrl.signal });
   } catch (err) {
     const reason =
       err instanceof Error && err.name === "AbortError" ? "timeout" : "network";
@@ -98,6 +100,7 @@ export async function fetchRepoCommitCount(
   const res = await ghFetch(url, {
     headers: ghHeaders(),
     next: { revalidate: COMMIT_COUNT_REVALIDATE_S },
+    timeoutMs: COMMIT_COUNT_TIMEOUT_MS,
   });
   if (!res) return null;
 
