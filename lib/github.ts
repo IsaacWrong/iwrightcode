@@ -21,7 +21,9 @@ function token(): string | undefined {
   return process.env.GITHUB_TOKEN || process.env.GH_TOKEN;
 }
 
-const FETCH_TIMEOUT_MS = 5000;
+const FETCH_TIMEOUT_MS = 10000;
+const ACTIVITY_REVALIDATE_S = 600;
+const COMMIT_COUNT_REVALIDATE_S = 86400;
 
 async function ghFetch(
   url: string,
@@ -41,7 +43,7 @@ async function ghFetch(
   }
 }
 
-export async function fetchActivity(limit = 8): Promise<ActivityItem[]> {
+function ghHeaders(): Record<string, string> {
   const t = token();
   const headers: Record<string, string> = {
     Accept: "application/vnd.github+json",
@@ -49,14 +51,22 @@ export async function fetchActivity(limit = 8): Promise<ActivityItem[]> {
     "User-Agent": "iwrightcode-portfolio",
   };
   if (t) headers.Authorization = `Bearer ${t}`;
+  return headers;
+}
 
+export async function fetchActivity(
+  limit = 8
+): Promise<ActivityItem[] | null> {
   const url = `https://api.github.com/users/${GH_USER}/events/public?per_page=30`;
-  const res = await ghFetch(url, { headers, next: { revalidate: 3600 } });
-  if (!res) return [];
+  const res = await ghFetch(url, {
+    headers: ghHeaders(),
+    next: { revalidate: ACTIVITY_REVALIDATE_S },
+  });
+  if (!res) return null;
 
   if (!res.ok) {
     console.warn(`[github] fetchActivity status ${res.status}`);
-    return [];
+    return null;
   }
 
   let raw: unknown;
@@ -64,11 +74,11 @@ export async function fetchActivity(limit = 8): Promise<ActivityItem[]> {
     raw = await res.json();
   } catch (err) {
     console.warn("[github] fetchActivity JSON parse failed", err);
-    return [];
+    return null;
   }
   if (!Array.isArray(raw)) {
     console.warn("[github] fetchActivity unexpected shape (not array)", raw);
-    return [];
+    return null;
   }
 
   const items: ActivityItem[] = [];
@@ -78,6 +88,38 @@ export async function fetchActivity(limit = 8): Promise<ActivityItem[]> {
     if (items.length >= limit) break;
   }
   return items;
+}
+
+export async function fetchRepoCommitCount(
+  owner: string,
+  repo: string
+): Promise<number | null> {
+  const url = `https://api.github.com/repos/${owner}/${repo}/commits?per_page=1`;
+  const res = await ghFetch(url, {
+    headers: ghHeaders(),
+    next: { revalidate: COMMIT_COUNT_REVALIDATE_S },
+  });
+  if (!res) return null;
+
+  if (!res.ok) {
+    console.warn(`[github] fetchRepoCommitCount ${owner}/${repo} status ${res.status}`);
+    return null;
+  }
+
+  const link = res.headers.get("Link") ?? "";
+  const lastMatch = link.match(/<[^>]*[?&]page=(\d+)[^>]*>;\s*rel="last"/);
+  if (lastMatch) {
+    const n = Number.parseInt(lastMatch[1], 10);
+    if (Number.isFinite(n) && n > 0) return n;
+  }
+
+  try {
+    const body = await res.json();
+    return Array.isArray(body) ? body.length : 0;
+  } catch (err) {
+    console.warn(`[github] fetchRepoCommitCount ${owner}/${repo} JSON parse failed`, err);
+    return null;
+  }
 }
 
 function formatEvent(ev: RawEvent): ActivityItem | null {
@@ -313,7 +355,7 @@ export async function fetchContributions(): Promise<Contributions | null> {
       query,
       variables: { user: GH_USER },
     }),
-    next: { revalidate: 3600 },
+    next: { revalidate: ACTIVITY_REVALIDATE_S },
   });
   if (!res) return null;
 
