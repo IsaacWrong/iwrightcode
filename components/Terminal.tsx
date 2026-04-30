@@ -11,6 +11,11 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
 import { projects } from "@/lib/projects";
 import type { ActivityItem } from "@/lib/github";
 import { relativeTime } from "@/lib/github";
+import {
+  CONTACT_EMAIL,
+  GITHUB_HANDLE,
+  LINKEDIN_HANDLE,
+} from "@/lib/contact";
 
 type DemoLine = {
   prompt: boolean;
@@ -162,15 +167,7 @@ export default function Terminal({ activity = [] }: Props) {
     return local.toLowerCase().slice(0, 16);
   }, [userEmail]);
 
-  const promptPrefix = (
-    <>
-      <span className="text-[#7ee787]">{username}</span>
-      <span className="text-muted">@iwrightcode</span>
-      <span className="text-muted">:</span>
-      <span className="text-[#79C0FF]">~</span>
-      <span className="text-muted mr-2">$</span>
-    </>
-  );
+  const promptPrefix = <TerminalPrompt user={username} />;
 
   const runCommand = useCallback(
     (raw: string) => {
@@ -245,9 +242,9 @@ export default function Terminal({ activity = [] }: Props) {
             next.push({
               kind: "output",
               lines: [
-                "email:    iwrightcode@gmail.com",
-                "github:   IsaacWrong",
-                "linkedin: iwrightcode",
+                `email:    ${CONTACT_EMAIL}`,
+                `github:   ${GITHUB_HANDLE}`,
+                `linkedin: ${LINKEDIN_HANDLE}`,
                 "status:   open to work",
               ],
             });
@@ -272,9 +269,9 @@ export default function Terminal({ activity = [] }: Props) {
           next.push({
             kind: "output",
             lines: [
-              "email:    iwrightcode@gmail.com",
-              "github:   IsaacWrong",
-              "linkedin: iwrightcode",
+              `email:    ${CONTACT_EMAIL}`,
+              `github:   ${GITHUB_HANDLE}`,
+              `linkedin: ${LINKEDIN_HANDLE}`,
             ],
           });
           break;
@@ -349,7 +346,7 @@ export default function Terminal({ activity = [] }: Props) {
                 <span>
                   <span className="text-[#7ee787]">access granted.</span>{" "}
                   <a
-                    href="mailto:iwrightcode@gmail.com?subject=let%27s%20build%20something"
+                    href={`mailto:${CONTACT_EMAIL}?subject=let%27s%20build%20something`}
                     className="text-fg underline underline-offset-4 hover:opacity-80"
                   >
                     opening mail.app →
@@ -414,16 +411,19 @@ export default function Terminal({ activity = [] }: Props) {
     [activity, username]
   );
 
+  const submitShell = (value: string) => {
+    setShellInput("");
+    if (value.trim().length > 0) {
+      setHistory((h) => [...h, value]);
+    }
+    historyIdxRef.current = -1;
+    runCommand(value);
+  };
+
   const onShellKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const value = shellInput;
-      setShellInput("");
-      if (value.trim().length > 0) {
-        setHistory((h) => [...h, value]);
-      }
-      historyIdxRef.current = -1;
-      runCommand(value);
+      submitShell(shellInput);
       return;
     }
     if (e.key === "ArrowUp") {
@@ -618,11 +618,7 @@ export default function Terminal({ activity = [] }: Props) {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                const value = shellInput;
-                setShellInput("");
-                if (value.trim().length > 0) setHistory((h) => [...h, value]);
-                historyIdxRef.current = -1;
-                runCommand(value);
+                submitShell(shellInput);
               }}
               className="flex items-center"
             >
@@ -645,15 +641,23 @@ export default function Terminal({ activity = [] }: Props) {
   );
 }
 
+function TerminalPrompt({ user }: { user: string }) {
+  return (
+    <>
+      <span className="text-[#7ee787]">{user}</span>
+      <span className="text-muted">@iwrightcode</span>
+      <span className="text-muted">:</span>
+      <span className="text-[#79C0FF]">~</span>
+      <span aria-hidden="true" className="text-muted mr-2">$</span>
+    </>
+  );
+}
+
 function ShellRow({ block }: { block: ShellBlock }) {
   if (block.kind === "command") {
     return (
       <div>
-        <span className="text-[#7ee787]">{block.user}</span>
-        <span className="text-muted">@iwrightcode</span>
-        <span className="text-muted">:</span>
-        <span className="text-[#79C0FF]">~</span>
-        <span className="text-muted mr-2">$</span>
+        <TerminalPrompt user={block.user} />
         <span className="text-fg">{block.text}</span>
       </div>
     );

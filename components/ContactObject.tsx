@@ -1,8 +1,13 @@
 "use client";
 
 import { useState } from "react";
-
-const EMAIL = "iwrightcode@gmail.com";
+import {
+  CONTACT_EMAIL as EMAIL,
+  GITHUB_URL,
+  GITHUB_HANDLE,
+  LINKEDIN_URL,
+  LINKEDIN_HANDLE,
+} from "@/lib/contact";
 
 type Social = {
   label: string;
@@ -11,12 +16,8 @@ type Social = {
 };
 
 const socials: Social[] = [
-  { label: "github", handle: "IsaacWrong", href: "https://github.com/IsaacWrong" },
-  {
-    label: "linkedin",
-    handle: "iwrightcode",
-    href: "https://www.linkedin.com/company/iwrightcode",
-  },
+  { label: "github", handle: GITHUB_HANDLE, href: GITHUB_URL },
+  { label: "linkedin", handle: LINKEDIN_HANDLE, href: LINKEDIN_URL },
 ];
 
 export default function ContactObject() {

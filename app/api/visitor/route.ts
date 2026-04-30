@@ -169,7 +169,7 @@ export async function POST(req: Request) {
       clearTimeout(timeout);
     }
   } else {
-    console.log(`[visitor] ${email} (ip=${safeIp}) — no RESEND_API_KEY set`);
+    console.warn("[visitor] RESEND_API_KEY not set — submission accepted but not delivered");
   }
 
   return NextResponse.json({ ok: true });

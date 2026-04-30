@@ -5,7 +5,7 @@ import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 
-export default function GlobalError({
+export default function RouteError({
   error,
   reset,
 }: {
