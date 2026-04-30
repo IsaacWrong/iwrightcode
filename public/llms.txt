@@ -1,0 +1,42 @@
+# iwrightcode_
+
+> Isaac Wright — full-stack developer using AI to drive revenue-multiplying outcomes for founders and small teams. Financial advisor by day, AI-driven developer by night.
+
+Isaac builds custom software for financial services firms, independent agencies, small practices, and early-stage founders. The deliverable is production code, not prototypes or slideware. Domain fluency in finance and insurance is part of what clients pay for. AI is the operating model: Claude Code, custom subagents, and MCP servers ship the bulk of production code while Isaac architects, reviews, and decides.
+
+Available for contract work and fractional technical leadership. Remote, US Eastern Time.
+
+## Contact
+
+- Email: iwrightcode@gmail.com
+- GitHub: https://github.com/IsaacWrong
+- LinkedIn: https://www.linkedin.com/company/iwrightcode
+- Site: https://iwrightcode.com
+
+## Stack
+
+- Frontend: Next.js, TypeScript, Tailwind, React
+- Backend: Node, Supabase, Postgres, Inngest
+- AI: Claude, Vercel AI SDK, Anthropic API, MCP
+- Tooling: Vercel, GitHub, Cursor, Claude Code
+
+## Selected Work
+
+- [Palm Commissions](https://pcommissions.com): Commission tracking and reconciliation for insurance agents. Upload CSV/Excel from any carrier, reconcile earnings, manage book of business. Stack: Next.js 15, Supabase, Stripe, PostHog, Sentry. Status: shipped.
+- [ExitEdge AI](https://exitedgeai.com): Marketing site and lead engine for a consulting firm helping owner-operated businesses prepare for exit through AI and process engineering. Stack: Next.js 16, Anthropic SDK, Supabase, Resend. Status: shipped.
+- [Bluegrass Home Services](https://bluegrasshservices.com): Marketing site and quote pipeline for a regional home-services company. Rate-limited quote form with direct-to-inbox delivery. Stack: Next.js 16, Resend, Upstash Redis, Zod. Status: shipped.
+- Autoform: Internal account-opening automation for a wealth management firm. Multi-step advisor intake routes through Make.com to populate DocuSign packets for client signature. Stack: Next.js 16, Zod, Make.com, DocuSign. Status: shipped.
+- Bookcheckr: AI-powered annuity book-of-business review for financial advisors. Desktop app that surfaces opportunities in under 30 seconds. Stack: Electron, React, Vite, Supabase, Anthropic, Stripe. Status: shipped.
+- Rectorfolio: Social investing platform with an AI co-pilot that creates strategies from natural language, executes trades, and explains every rebalance. Stack: Next.js 16, Vercel AI SDK, Anthropic, Supabase, Inngest. Status: building.
+
+## Engagement Model
+
+- Contract / project-based custom software builds
+- Fractional technical leadership for early-stage teams
+- Domain focus: financial services, insurance, professional services
+- AI-native delivery: short path from idea to revenue, production-grade code
+
+## Reference
+
+- Sitemap: https://iwrightcode.com/sitemap.xml
+- Robots: https://iwrightcode.com/robots.txt
