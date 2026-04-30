@@ -1,3 +1,7 @@
+export function isExternalHref(href: string): boolean {
+  return /^https?:\/\//.test(href);
+}
+
 export type Project = {
   slug: string;
   name: string;

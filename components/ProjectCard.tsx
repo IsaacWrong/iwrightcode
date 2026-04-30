@@ -1,9 +1,9 @@
 import Link from "next/link";
-import type { Project } from "@/lib/projects";
+import { isExternalHref, type Project } from "@/lib/projects";
 
 function diffLine(project: Project): { prefix: string; text: string; tone: "add" | "wip" } {
   if (project.href) {
-    const isExternal = /^https?:\/\//.test(project.href);
+    const isExternal = isExternalHref(project.href);
     if (isExternal) {
       const host = project.href.replace(/^https?:\/\//, "").replace(/\/$/, "");
       return { prefix: "+", text: `deploy → ${host}`, tone: "add" };
@@ -69,7 +69,7 @@ export default function ProjectCard({ project }: { project: Project }) {
     return <div className="group">{inner}</div>;
   }
 
-  const isExternal = /^https?:\/\//.test(project.href);
+  const isExternal = isExternalHref(project.href);
   if (isExternal) {
     return (
       <a
