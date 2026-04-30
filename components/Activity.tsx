@@ -66,7 +66,7 @@ export default function Activity({
             ) : (
               <div className="text-muted">
                 <span className="opacity-60 mr-2">{"//"}</span>
-                no recent public activity — most work happens in private repos.
+                no recent activity — try again later.
               </div>
             )
           ) : (
@@ -100,7 +100,7 @@ export default function Activity({
           )}
           <p className="text-muted mt-4 text-[11px] select-none">
             <span className="opacity-60">{"// "}</span>
-            cached for 1h · public events only
+            cached for 10m · private events redacted
           </p>
         </div>
       </div>
