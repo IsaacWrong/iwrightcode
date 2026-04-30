@@ -11,6 +11,11 @@ import { useReducedMotion } from "@/lib/useReducedMotion";
 import { projects } from "@/lib/projects";
 import type { ActivityItem } from "@/lib/github";
 import { relativeTime } from "@/lib/github";
+import {
+  CONTACT_EMAIL,
+  GITHUB_HANDLE,
+  LINKEDIN_HANDLE,
+} from "@/lib/contact";
 
 type DemoLine = {
   prompt: boolean;
@@ -245,9 +250,9 @@ export default function Terminal({ activity = [] }: Props) {
             next.push({
               kind: "output",
               lines: [
-                "email:    iwrightcode@gmail.com",
-                "github:   IsaacWrong",
-                "linkedin: iwrightcode",
+                `email:    ${CONTACT_EMAIL}`,
+                `github:   ${GITHUB_HANDLE}`,
+                `linkedin: ${LINKEDIN_HANDLE}`,
                 "status:   open to work",
               ],
             });
@@ -272,9 +277,9 @@ export default function Terminal({ activity = [] }: Props) {
           next.push({
             kind: "output",
             lines: [
-              "email:    iwrightcode@gmail.com",
-              "github:   IsaacWrong",
-              "linkedin: iwrightcode",
+              `email:    ${CONTACT_EMAIL}`,
+              `github:   ${GITHUB_HANDLE}`,
+              `linkedin: ${LINKEDIN_HANDLE}`,
             ],
           });
           break;
@@ -349,7 +354,7 @@ export default function Terminal({ activity = [] }: Props) {
                 <span>
                   <span className="text-[#7ee787]">access granted.</span>{" "}
                   <a
-                    href="mailto:iwrightcode@gmail.com?subject=let%27s%20build%20something"
+                    href={`mailto:${CONTACT_EMAIL}?subject=let%27s%20build%20something`}
                     className="text-fg underline underline-offset-4 hover:opacity-80"
                   >
                     opening mail.app →

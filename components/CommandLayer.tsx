@@ -2,6 +2,11 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { projects } from "@/lib/projects";
+import {
+  CONTACT_EMAIL as EMAIL,
+  GITHUB_URL as GH,
+  LINKEDIN_URL as LI,
+} from "@/lib/contact";
 
 type Action = {
   id: string;
@@ -11,10 +16,6 @@ type Action = {
   keywords?: string;
   run: () => void;
 };
-
-const EMAIL = "iwrightcode@gmail.com";
-const GH = "https://github.com/IsaacWrong";
-const LI = "https://www.linkedin.com/company/iwrightcode";
 
 function jump(hash: string) {
   if (typeof window === "undefined") return;
