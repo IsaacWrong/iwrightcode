@@ -9,10 +9,12 @@ import Footer from "@/components/Footer";
 import { fetchActivity, fetchContributions } from "@/lib/github";
 
 export default async function Home() {
-  const [activity, contributions] = await Promise.all([
+  const [activityRaw, contributions] = await Promise.all([
     fetchActivity(8),
     fetchContributions(),
   ]);
+  const activity = activityRaw ?? [];
+  const activityFailed = activityRaw === null;
   const now = new Date();
 
   return (
@@ -21,7 +23,12 @@ export default async function Home() {
       <main className="flex-1">
         <Hero activity={activity} now={now} />
         <Work />
-        <Activity items={activity} now={now} contributions={contributions} />
+        <Activity
+          items={activity}
+          now={now}
+          contributions={contributions}
+          failed={activityFailed}
+        />
         <section
           id="timeline"
           className="pt-0 pb-24 px-6 md:px-10 lg:px-16"
