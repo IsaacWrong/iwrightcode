@@ -86,12 +86,17 @@ export async function fetchActivity(
   }
 
   const items: ActivityItem[] = [];
-  for (const ev of raw as RawEvent[]) {
-    if (ev.public !== true) {
-      const redacted = redactPrivateEvent(ev);
+  for (const ev of raw as unknown[]) {
+    if (typeof ev !== "object" || ev === null) {
+      console.warn("[github] fetchActivity skipping non-object element", typeof ev);
+      continue;
+    }
+    const evt = ev as RawEvent;
+    if (evt.public !== true) {
+      const redacted = redactPrivateEvent(evt);
       if (redacted) items.push(redacted);
     } else {
-      const formatted = formatEvent(ev);
+      const formatted = formatEvent(evt);
       if (formatted) items.push(formatted);
     }
     if (items.length >= limit) break;
