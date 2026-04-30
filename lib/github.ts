@@ -81,7 +81,11 @@ export async function fetchActivity(
     return null;
   }
   if (!Array.isArray(raw)) {
-    console.warn("[github] fetchActivity unexpected shape (not array)", raw);
+    const shape =
+      typeof raw === "object" && raw !== null
+        ? Object.keys(raw as Record<string, unknown>).slice(0, 5)
+        : typeof raw;
+    console.warn("[github] fetchActivity unexpected shape (not array)", shape);
     return null;
   }
 
