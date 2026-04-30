@@ -419,16 +419,19 @@ export default function Terminal({ activity = [] }: Props) {
     [activity, username]
   );
 
+  const submitShell = (value: string) => {
+    setShellInput("");
+    if (value.trim().length > 0) {
+      setHistory((h) => [...h, value]);
+    }
+    historyIdxRef.current = -1;
+    runCommand(value);
+  };
+
   const onShellKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       e.preventDefault();
-      const value = shellInput;
-      setShellInput("");
-      if (value.trim().length > 0) {
-        setHistory((h) => [...h, value]);
-      }
-      historyIdxRef.current = -1;
-      runCommand(value);
+      submitShell(shellInput);
       return;
     }
     if (e.key === "ArrowUp") {
@@ -623,11 +626,7 @@ export default function Terminal({ activity = [] }: Props) {
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                const value = shellInput;
-                setShellInput("");
-                if (value.trim().length > 0) setHistory((h) => [...h, value]);
-                historyIdxRef.current = -1;
-                runCommand(value);
+                submitShell(shellInput);
               }}
               className="flex items-center"
             >
